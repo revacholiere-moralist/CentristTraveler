@@ -12,7 +12,7 @@ using Dapper;
 
 namespace CentristTraveler.Dao.Implementations
 {
-    public class PostDao: IPostDao
+    public class PostDao : IPostDao
     {
         private string _connectionString;
         public PostDao(IOptions<ConnectionStrings> connectionStrings)
@@ -28,7 +28,8 @@ namespace CentristTraveler.Dao.Implementations
                           ,[CreatedDate]
                           ,[CreatedBy]
                           ,[UpdatedDate]
-                          ,[UpdatedBy] FROM Post";
+                          ,[UpdatedBy] FROM Post
+                            ORDER BY UpdatedDate DESC";
             List<Post> posts = new List<Post>();
 
             using (var connection = new SqlConnection(_connectionString))
@@ -115,7 +116,7 @@ namespace CentristTraveler.Dao.Implementations
             return posts;
         }
 
-        public bool Create(Post post)
+        public int Create(Post post)
         {
             string sql = @"INSERT INTO [dbo].[Post]
                        ([Title]
@@ -132,36 +133,49 @@ namespace CentristTraveler.Dao.Implementations
                        ,@CreatedDate
                        ,@CreatedBy
                        ,@UpdatedDate
-                       ,@UpdatedBy)";
-
-            bool isSuccess = false;
+                       ,@UpdatedBy)
+                SELECT CAST(SCOPE_IDENTITY() as int)";
+            int postId = 0;
             using (var connection = new SqlConnection(_connectionString))
             {
-                try
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
                 {
-                    int affectedRows = connection.Execute(sql,
-                        new
-                        {
-                            @Title = post.Title,
-                            @Body = post.Body,
-                            @ThumbnailPath = post.ThumbnailPath,
-                            @CreatedDate = post.CreatedDate,
-                            @CreatedBy = post.CreatedBy,
-                            @UpdatedDate = post.UpdatedDate,
-                            @UpdatedBy = post.UpdatedBy
-                        });
-                    if (affectedRows > 0)
+                    try
                     {
-                        isSuccess = true;
+                        postId = connection.ExecuteScalar<int>(sql,
+                            new
+                            {
+                                @Title = post.Title,
+                                @Body = post.Body,
+                                @ThumbnailPath = post.ThumbnailPath,
+                                @CreatedDate = post.CreatedDate,
+                                @CreatedBy = post.CreatedBy,
+                                @UpdatedDate = post.UpdatedDate,
+                                @UpdatedBy = post.UpdatedBy
+                            },
+                            transaction);
+                        if (postId > 0)
+                        {
+                            transaction.Commit();
+                        }
+                    }
+
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        //TODO: add error log
+                    }
+                    finally
+                    {
+                        connection.Close();
+                        connection.Dispose();
                     }
                 }
-                catch
-                {
-                    isSuccess = false;
-                    //TODO: add error log
-                }
+                
+
             }
-            return isSuccess;
+            return postId;
         }
 
         public bool Update(Post post)
@@ -177,26 +191,38 @@ namespace CentristTraveler.Dao.Implementations
             bool isSuccess = false;
             using (var connection = new SqlConnection(_connectionString))
             {
-                try
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
                 {
-                    int affectedRows = connection.Execute(sql,
-                                new
-                                {
-                                    @Id = post.Id,
-                                    @Title = post.Title,
-                                    @Body = post.Body,
-                                    @ThumbnailPath = post.ThumbnailPath,
-                                    @UpdatedDate = post.UpdatedDate,
-                                    @UpdatedBy = post.UpdatedBy
-                                });
-                    if (affectedRows > 0)
+                    try
                     {
-                        isSuccess = true;
+                        int affectedRows = connection.Execute(sql,
+                                    new
+                                    {
+                                        @Id = post.Id,
+                                        @Title = post.Title,
+                                        @Body = post.Body,
+                                        @ThumbnailPath = post.ThumbnailPath,
+                                        @UpdatedDate = post.UpdatedDate,
+                                        @UpdatedBy = post.UpdatedBy
+                                    },
+                                    transaction);
+                        if (affectedRows > 0)
+                        {
+                            isSuccess = true;
+                            transaction.Commit();
+                        }
                     }
-                }
-                catch (Exception)
-                {
-                    isSuccess = false;
+                    catch (Exception)
+                    {
+                        isSuccess = false;
+                        transaction.Rollback();
+                    }
+                    finally
+                    {
+                        connection.Close();
+                        connection.Dispose();
+                    }
                 }
             }
             return isSuccess;
@@ -208,24 +234,195 @@ namespace CentristTraveler.Dao.Implementations
             string sql = @"DELETE FROM [dbo].[Post]
                 WHERE Id = @Id";
             bool isSuccess = false;
-            try
+            using (var connection = new SqlConnection(_connectionString))
             {
-                using (var connection = new SqlConnection(_connectionString))
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
                 {
-                    int affectedRows = connection.Execute(sql,
-                        new
-                        {
-                            @Id = id
-                        });
-                    if (affectedRows > 0)
+                    try
                     {
-                        isSuccess = true;
+
+                        int affectedRows = connection.Execute(sql,
+                            new
+                            {
+                                @Id = id
+                            },
+                            transaction);
+                        if (affectedRows > 0)
+                        {
+                            isSuccess = true;
+                            transaction.Commit();
+                        }
+
+                    }
+                    catch (Exception)
+                    {
+                        isSuccess = false;
+                        transaction.Rollback();
+                    }
+                    finally
+                    {
+                        connection.Close();
+                        connection.Dispose();
                     }
                 }
             }
-            catch (Exception)
+            return isSuccess;
+        }
+
+        public bool InsertPostTags(int postId, List<Tag> tags, Post post)
+        {
+            string sql = @"INSERT INTO [dbo].[Mapping_Post_Tag]
+                           ([PostId]
+                           ,[TagId]
+                           ,[CreatedBy]
+                           ,[CreatedDate]
+                           ,[UpdatedBy]
+                           ,[UpdatedDate])
+                     VALUES
+                           (@PostId
+                           ,@TagId
+                           ,@CreatedBy
+                           ,@CreatedDate
+                           ,@UpdatedBy
+                           ,@UpdatedDate)";
+            bool isSuccess = false;
+            using (var connection = new SqlConnection(_connectionString))
             {
-                isSuccess = false;
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    foreach (Tag tag in tags)
+                    {
+                        try
+                        {
+                            int affectedRows = connection.Execute(sql,
+                                new
+                                {
+                                    @PostId = postId,
+                                    @TagId = tag.Id,
+                                    @CreatedBy = post.CreatedBy,
+                                    @CreatedDate = DateTime.Now,
+                                    @UpdatedBy = post.UpdatedBy,
+                                    @UpdatedDate = DateTime.Now
+                                },
+                                transaction);
+                            if (affectedRows > 0)
+                            {
+                                isSuccess = true;
+                            }
+                        }
+
+                        catch (Exception)
+                        {
+                            isSuccess = false;
+                        }
+                    }
+
+                    if (isSuccess)
+                    {
+                        transaction.Commit();
+                    }
+                    else
+                    {
+                        transaction.Rollback();
+                    }
+
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return isSuccess;
+        }
+
+        public bool DeletePostTags(int postId, List<Tag> tags)
+        {
+            string sql = @"DELETE FROM [dbo].[Mapping_Post_Tag]
+                            WHERE PostId = @PostId
+                            AND TagId = @TagId";
+            bool isSuccess = false;
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    foreach (Tag tag in tags)
+                    {
+                        try
+                        {
+                            int affectedRows = connection.Execute(sql,
+                                new
+                                {
+                                    @PostId = postId,
+                                    @TagId = tag.Id
+                                },
+                                transaction);
+                            if (affectedRows > 0)
+                            {
+                                isSuccess = true;
+                            }
+                        }
+
+                        catch (Exception)
+                        {
+                            isSuccess = false;
+                        }
+                        
+                    }
+                    if (isSuccess)
+                    {
+                        transaction.Commit();
+                    }
+                    else
+                    {
+                        transaction.Dispose();
+                    }
+
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return isSuccess;
+        }
+
+        public bool DeletePostTagsByPostId(int postId)
+        {
+            string sql = @"DELETE FROM [dbo].[Mapping_Post_Tag]
+                            WHERE PostId = @PostId";
+            bool isSuccess = false;
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+
+                    try
+                    {
+                        int affectedRows = connection.Execute(sql,
+                            new
+                            {
+                                @PostId = postId
+                            },
+                            transaction);
+                        if (affectedRows > 0)
+                        {
+                            isSuccess = true;
+                            transaction.Commit();
+                        }
+                    }
+
+                    catch (Exception)
+                    {
+                        isSuccess = false;
+                        transaction.Rollback();
+                    }
+                    finally
+                    {
+                        connection.Close();
+                        connection.Dispose();
+                    }
+
+                }
             }
             return isSuccess;
         }

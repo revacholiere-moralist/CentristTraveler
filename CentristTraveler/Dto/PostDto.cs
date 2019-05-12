@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CentristTraveler.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace CentristTraveler.Dto
         public string Body { get; set; }
         [JsonProperty(PropertyName = "thumbnail_path")]
         public string ThumbnailPath { get; set; }
+        [JsonProperty(PropertyName = "tags")]
+        public List<Tag> Tags { get; set; }
     }
 }

@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using CentristTraveler.BusinessLogic.Interfaces;
 using CentristTraveler.Dto;
 using CentristTraveler.Model;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CentristTraveler.Controllers
@@ -14,30 +17,18 @@ namespace CentristTraveler.Controllers
     public class PostController : Controller
     {
         private IPostBL _postBL;
-        public PostController(IPostBL postBL)
+        private IHostingEnvironment _hostingEnvironment;
+        public PostController(IPostBL postBL, IHostingEnvironment hostingEnvironment)
         {
             _postBL = postBL;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet]
         [Route("GetAllPosts")]
         public IEnumerable<PostDto> GetAllPosts()
         {
-            List<Post> posts = _postBL.GetAllPosts();
-            List<PostDto> postDtos = new List<PostDto>();
-            foreach (Post post in posts)
-            {
-                PostDto postDto = new PostDto
-                {
-                    Id = post.Id,
-                    Title = post.Title,
-                    Body = post.Body,
-                    ThumbnailPath = post.ThumbnailPath,
-                    CreatedDate = post.CreatedDate,
-                    UpdatedDate = post.UpdatedDate
-                };
-                postDtos.Add(postDto);
-            }
+            List<PostDto> postDtos = _postBL.GetAllPosts();
             return postDtos;
         }
 
@@ -49,15 +40,8 @@ namespace CentristTraveler.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            Post post = new Post
-            {
-                Title = postDto.Title,
-                Body = postDto.Body,
-                ThumbnailPath = postDto.ThumbnailPath
-            };
             
-            return Ok(_postBL.Create(post));
+            return Ok(_postBL.Create(postDto));
         }
         [HttpGet]
         [Route("Update/{id}")]
@@ -67,18 +51,8 @@ namespace CentristTraveler.Controllers
             {
                 return BadRequest(ModelState);
             }
-            Post post = _postBL.GetPostById(id);
-            PostDto postDto = new PostDto
-            {
-                Id = post.Id,
-                Title = post.Title,
-                Body = post.Body,
-                ThumbnailPath = post.ThumbnailPath,
-                CreatedDate = post.CreatedDate,
-                CreatedBy = post.CreatedBy,
-                UpdatedDate = post.UpdatedDate,
-                UpdatedBy = post.UpdatedBy
-            };
+            PostDto postDto = _postBL.GetPostById(id);
+            
             return Ok(postDto);
         }
 
@@ -90,19 +64,8 @@ namespace CentristTraveler.Controllers
             {
                 return BadRequest(ModelState);
             }
-            Post post = new Post
-            {
-                Id = postDto.Id,
-                Title = postDto.Title,
-                Body = postDto.Body,
-                ThumbnailPath = postDto.ThumbnailPath,
-                CreatedDate = postDto.CreatedDate,
-                CreatedBy = postDto.CreatedBy,
-                UpdatedDate = postDto.UpdatedDate,
-                UpdatedBy = postDto.UpdatedBy
-            };
-           
-            return Ok(_postBL.Update(post));
+            
+            return Ok(_postBL.Update(postDto));
         }
         [HttpGet]
         [Route("Detail/{id}")]
@@ -112,18 +75,7 @@ namespace CentristTraveler.Controllers
             {
                 return BadRequest(ModelState);
             }
-            Post post = _postBL.GetPostById(id);
-            PostDto postDto = new PostDto
-            {
-                Id = post.Id,
-                Title = post.Title,
-                Body = post.Body,
-                ThumbnailPath = post.ThumbnailPath,
-                CreatedDate = post.CreatedDate,
-                CreatedBy = post.CreatedBy,
-                UpdatedDate = post.UpdatedDate,
-                UpdatedBy = post.UpdatedBy
-            };
+            PostDto postDto = _postBL.GetPostById(id);
             return Ok(postDto);
         }
 

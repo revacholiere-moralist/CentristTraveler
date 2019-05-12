@@ -1,4 +1,5 @@
-﻿using CentristTraveler.Model;
+﻿using CentristTraveler.Dto;
+using CentristTraveler.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,12 @@ namespace CentristTraveler.BusinessLogic.Interfaces
 {
     public interface IPostBL
     {
-        List<Post> GetAllPosts();
-        List<Post> GetPostsByCreationDate(DateTime beginDate, DateTime endDate);
-        List<Post> GetPostsByCollaborators(List<string> username);
-        Post GetPostById(int id);
-        bool Create(Post post);
-        bool Update(Post post);
+        List<PostDto> GetAllPosts();
+        List<PostDto> GetPostsByCreationDate(DateTime beginDate, DateTime endDate);
+        List<PostDto> GetPostsByCollaborators(List<string> username);
+        PostDto GetPostById(int id);
+        bool Create(PostDto postDto);
+        bool Update(PostDto postDto);
         bool Delete(int id);
     }
 }

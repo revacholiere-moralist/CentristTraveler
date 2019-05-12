@@ -33,6 +33,7 @@ namespace CentristTraveler
 
             //Dependency Mapper for DAO
             services.AddScoped<IPostDao, PostDao>();
+            services.AddScoped<ITagDao, TagDao>();
 
             //Dependency Mapper for Business Logic
             services.AddScoped<IPostBL, PostBL>();

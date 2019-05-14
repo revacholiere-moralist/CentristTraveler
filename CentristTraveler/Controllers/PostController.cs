@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using CentristTraveler.BusinessLogic.Interfaces;
 using CentristTraveler.Dto;
-using CentristTraveler.Model;
+using CentristTraveler.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 

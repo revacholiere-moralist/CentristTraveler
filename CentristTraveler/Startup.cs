@@ -1,8 +1,9 @@
 using CentristTraveler.BusinessLogic.Implementations;
 using CentristTraveler.BusinessLogic.Interfaces;
-using CentristTraveler.Dao.Implementations;
-using CentristTraveler.Dao.Interfaces;
+
 using CentristTraveler.Helper;
+using CentristTraveler.UnitOfWorks.Implementations;
+using CentristTraveler.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,10 +32,8 @@ namespace CentristTraveler
             //Get Connection String from AppSettings
             services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
 
-            //Dependency Mapper for DAO
-            services.AddScoped<IPostDao, PostDao>();
-            services.AddScoped<ITagDao, TagDao>();
-
+            //Dependency Mapper for UoW
+            services.AddScoped<IPostUoW, PostUoW> ();
             //Dependency Mapper for Business Logic
             services.AddScoped<IPostBL, PostBL>();
 

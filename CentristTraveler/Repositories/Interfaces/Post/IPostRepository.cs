@@ -1,12 +1,12 @@
-﻿using CentristTraveler.Model;
+﻿using CentristTraveler.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CentristTraveler.Dao.Interfaces
+namespace CentristTraveler.Repositories.Interfaces
 {
-    public interface IPostDao
+    public interface IPostRepository
     {
         List<Post> GetAllPosts();
         List<Post> GetPostsByCreationDate(DateTime beginDate, DateTime endDate);
@@ -15,8 +15,6 @@ namespace CentristTraveler.Dao.Interfaces
         int Create(Post post);
         bool Update(Post post);
         bool Delete(int id);
-        bool InsertPostTags(int postId, List<Tag> tags, Post post);
-        bool DeletePostTags(int postId, List<Tag> tags);
-        bool DeletePostTagsByPostId(int postId);
+        
     }
 }

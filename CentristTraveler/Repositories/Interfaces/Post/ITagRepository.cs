@@ -1,12 +1,12 @@
-﻿using CentristTraveler.Model;
+﻿using CentristTraveler.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CentristTraveler.Dao.Interfaces
+namespace CentristTraveler.Repositories.Interfaces
 {
-    public interface ITagDao
+    public interface ITagRepository
     {
         List<Tag> GetAllTags();
         List<Tag> GetTagsByPostId(int postId);

@@ -1,4 +1,5 @@
-﻿using CentristTraveler.Models;
+﻿using CentristTraveler.Dto;
+using CentristTraveler.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace CentristTraveler.BusinessLogic.Interfaces
 {
     public interface IAuthenticationBL
     {
-        bool Register(User user);
+        bool Register(UserDto userDto);
         string Authenticate(string login, string password);
     }
 }

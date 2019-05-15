@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
 using CentristTraveler.Helper;
 using Microsoft.Extensions.Options;
+using CentristTraveler.Dto;
 
 namespace CentristTraveler.BusinessLogic.Implementations
 {
@@ -48,9 +49,31 @@ namespace CentristTraveler.BusinessLogic.Implementations
             }
         }
 
-        public bool Register(User user)
+        public bool Register(UserDto userDto)
         {
-            throw new NotImplementedException();
+            _authenticationUoW.Begin();
+            try
+            {
+                User user = new User
+                {
+                    Username = userDto.Username,
+                    Password = BCryptHelper.HashPassword(userDto.Password, BCryptHelper.GenerateSalt(12)),
+                    Email = userDto.Email,
+                    CreatedBy = "admin",
+                    CreatedDate = DateTime.Now,
+                    UpdatedBy = "admin",
+                    UpdatedDate = DateTime.Now
+                };
+            
+                _authenticationUoW.UserRepository.Create(user);
+                _authenticationUoW.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _authenticationUoW.Dispose();
+                return false;
+            }
         }
     }
 }

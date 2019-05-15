@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace CentristTraveler.UnitOfWorks.Interfaces
 {
-    public interface IPostUoW : IBaseUoW
+    public interface IAuthenticationUoW : IBaseUoW
     {
-        IPostRepository PostRepository { get; }
-        ITagRepository TagRepository { get; }
-        IPostTagsRepository PostTagsRepository { get; }
+        IUserRepository UserRepository { get; }
+        IRoleRepository RoleRepository { get; }
+        IUserRoleRepository UserRoleRepository { get; }
         void Begin();
     }
 }

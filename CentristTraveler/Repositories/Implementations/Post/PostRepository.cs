@@ -13,20 +13,9 @@ using System.Data;
 
 namespace CentristTraveler.Repositories.Implementations
 {
-    public class PostRepository : IPostRepository
+    public class PostRepository : BaseRepository, IPostRepository
     {
-        #region Private members
-        private IDbTransaction _transaction;
-        private IDbConnection _connection;
-        #endregion
-        #region Constructor
-        public PostRepository(IDbTransaction transaction)
-        {
-            _transaction = transaction;
-            _connection = transaction.Connection;
-        }
-        #endregion
-
+        
         public List<Post> GetAllPosts()
         {
             string sql = @"SELECT [Id]

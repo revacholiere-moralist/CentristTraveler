@@ -2,8 +2,11 @@ using CentristTraveler.BusinessLogic.Implementations;
 using CentristTraveler.BusinessLogic.Interfaces;
 
 using CentristTraveler.Helper;
+using CentristTraveler.Repositories.Implementations;
+using CentristTraveler.Repositories.Interfaces;
 using CentristTraveler.UnitOfWorks.Implementations;
 using CentristTraveler.UnitOfWorks.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace CentristTraveler
 {
@@ -32,11 +37,36 @@ namespace CentristTraveler
             //Get Connection String from AppSettings
             services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
 
+            // Get Token Config
+            services.Configure<TokenConfig>(Configuration.GetSection("TokenConfig"));
+            #region Dependency Mapper
             //Dependency Mapper for UoW
-            services.AddScoped<IPostUoW, PostUoW> ();
+            services.AddScoped<IPostUoW, PostUoW>();
+
             //Dependency Mapper for Business Logic
             services.AddScoped<IPostBL, PostBL>();
 
+            //Dependency Mapper for Repositories
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<IPostTagsRepository, PostTagsRepository>();
+            #endregion
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+
+                        ValidIssuer = Configuration.GetSection("TokenConfig").GetValue<string>("Issuer"),
+                        ValidAudience = Configuration.GetSection("TokenConfig").GetValue<string>("Audience"),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetSection("TokenConfig").GetValue<string>("TokenSecurityKey")))
+                    };
+                });
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -60,6 +90,7 @@ namespace CentristTraveler
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

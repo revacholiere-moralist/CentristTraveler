@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CentristTraveler.Repositories.Interfaces
 {
-    public interface IPostTagsRepository
+    public interface IPostTagsRepository : IBaseRepository
     {
         bool InsertPostTags(int postId, List<Tag> tags, Post post);
         bool DeletePostTags(int postId, List<Tag> tags);

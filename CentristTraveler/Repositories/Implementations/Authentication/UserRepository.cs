@@ -9,17 +9,9 @@ using System.Threading.Tasks;
 
 namespace CentristTraveler.Repositories.Implementations
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : BaseRepository, IUserRepository
     {
-        #region Private members
-        private IDbTransaction _transaction;
-        private IDbConnection _connection;
-        #endregion
-        public UserRepository(IDbTransaction transaction)
-        {
-            _transaction = transaction;
-            _connection = transaction.Connection;
-        }
+
         public List<User> GetAllUsers()
         {
             string sql = @"SELECT [Id]
@@ -137,18 +129,11 @@ namespace CentristTraveler.Repositories.Implementations
             return user;
         }
 
-        public User GetUserByLoginAndPassword(string login, string password)
+        public User GetHashedPassword(string login)
         {
-            string sql = @"SELECT [Id]
-                          ,[Username]
-                          ,[Email]
-                          ,[CreatedDate]
-                          ,[CreatedBy]
-                          ,[UpdatedDate]
-                          ,[UpdatedBy] 
+            string sql = @"SELECT [Password]
                             FROM User
-                            WHERE (Username = @login OR Email = @login)
-                            AND Password = @password";
+                            WHERE (Username = @login OR Email = @login)";
             User user = new User();
 
             try
@@ -156,8 +141,7 @@ namespace CentristTraveler.Repositories.Implementations
                 user = _connection.Query<User>(sql,
                     new
                     {
-                        @login = login,
-                        @password = password
+                        @login = login
                     },
                     _transaction).FirstOrDefault();
             }
@@ -248,8 +232,6 @@ namespace CentristTraveler.Repositories.Implementations
 
             return isSuccess;
         }
-
-
 
     }
 }

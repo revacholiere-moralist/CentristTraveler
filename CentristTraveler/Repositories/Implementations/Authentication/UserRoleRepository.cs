@@ -3,45 +3,45 @@ using CentristTraveler.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Dapper;
 using System.Linq;
+using Dapper;
 using System.Threading.Tasks;
 
 namespace CentristTraveler.Repositories.Implementations
 {
-    public class PostTagsRepository : BaseRepository, IPostTagsRepository
+    public class UserRoleRepository : BaseRepository, IUserRoleRepository
     {
-        
-        public bool InsertPostTags(int postId, List<Tag> tags, Post post)
+
+        public bool InsertUserRoles(int userId, List<Role> roles, User user)
         {
-            string sql = @"INSERT INTO [dbo].[Mapping_Post_Tag]
-                           ([PostId]
-                           ,[TagId]
+            string sql = @"INSERT INTO [dbo].[Mapping_User_Role]
+                           ([UserId]
+                           ,[RoleId]
                            ,[CreatedBy]
                            ,[CreatedDate]
                            ,[UpdatedBy]
                            ,[UpdatedDate])
                      VALUES
-                           (@PostId
-                           ,@TagId
+                           (@UserId
+                           ,@RoleId
                            ,@CreatedBy
                            ,@CreatedDate
                            ,@UpdatedBy
                            ,@UpdatedDate)";
             bool isSuccess = false;
-            
-            foreach (Tag tag in tags)
+
+            foreach (Role role in roles)
             {
                 try
                 {
                     int affectedRows = _connection.Execute(sql,
                         new
                         {
-                            @PostId = postId,
-                            @TagId = tag.Id,
-                            @CreatedBy = post.CreatedBy,
+                            @UserId = userId,
+                            @RoleId = role.Id,
+                            @CreatedBy = role.CreatedBy,
                             @CreatedDate = DateTime.Now,
-                            @UpdatedBy = post.UpdatedBy,
+                            @UpdatedBy = role.UpdatedBy,
                             @UpdatedDate = DateTime.Now
                         },
                         _transaction);
@@ -59,23 +59,22 @@ namespace CentristTraveler.Repositories.Implementations
 
             return isSuccess;
         }
-
-        public bool DeletePostTags(int postId, List<Tag> tags)
+        public bool DeleteUserRoles(int userId, List<Role> roles)
         {
-            string sql = @"DELETE FROM [dbo].[Mapping_Post_Tag]
-                            WHERE PostId = @PostId
-                            AND TagId = @TagId";
+            string sql = @"DELETE FROM [dbo].[Mapping_User_Role]
+                            WHERE UserId = @UserId
+                            AND RoleId = @RoleId";
             bool isSuccess = false;
-            
-            foreach (Tag tag in tags)
+
+            foreach (Role role in roles)
             {
                 try
                 {
                     int affectedRows = _connection.Execute(sql,
                         new
                         {
-                            @PostId = postId,
-                            @TagId = tag.Id
+                            @UserId = userId,
+                            @RoleId = role.Id
                         },
                         _transaction);
                     if (affectedRows > 0)
@@ -90,28 +89,30 @@ namespace CentristTraveler.Repositories.Implementations
                 }
 
             }
-            
+
             return isSuccess;
         }
 
-        public bool DeletePostTagsByPostId(int postId)
+        public bool DeleteUserRoleByUserId(int userId)
         {
-            string sql = @"DELETE FROM [dbo].[Mapping_Post_Tag]
-                            WHERE PostId = @PostId";
+            string sql = @"DELETE FROM [dbo].[Mapping_User_Role]
+                            WHERE UserId = @UserId";
             bool isSuccess = false;
-            
+
             int affectedRows = _connection.Execute(sql,
                 new
                 {
-                    @PostId = postId
+                    @UserId = userId
                 },
                 _transaction);
             if (affectedRows > 0)
             {
                 isSuccess = true;
             }
-            
+
             return isSuccess;
         }
+
+        
     }
 }

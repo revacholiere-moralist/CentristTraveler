@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CentristTraveler.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,9 @@ namespace CentristTraveler.Dto
         public string Password { get; set; }
         [JsonProperty(PropertyName = "email")]
         public string Email { get; set; }
+        [JsonProperty(PropertyName = "token")]
+        public string Token { get; set; }
+        [JsonProperty(PropertyName = "roles")]
+        List<Role> roles { get; set; }
     }
 }

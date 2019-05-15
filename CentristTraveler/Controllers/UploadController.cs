@@ -46,7 +46,7 @@ namespace CentristTraveler.Controllers
                 }
                 return Json("Upload Successful." + servePath);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return Json("Upload Failed: " + ex.Message);
             }

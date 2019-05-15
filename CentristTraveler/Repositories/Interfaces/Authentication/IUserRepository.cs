@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace CentristTraveler.Repositories.Interfaces
 {
-    public interface IUserRepository
+    public interface IUserRepository : IBaseRepository
     {
         List<User> GetAllUsers();
         User GetUserById(int id);
         User GetUserByUsername(string username);
 
         User GetUserByEmail(string email);
-        User GetUserByLoginAndPassword(string login, string password);
+        string GetHashedPassword(string login);
         int Create(User user);
         bool Update(User user);
         bool Delete(int id);

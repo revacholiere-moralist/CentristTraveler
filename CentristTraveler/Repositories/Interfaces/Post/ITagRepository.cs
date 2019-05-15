@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CentristTraveler.Repositories.Interfaces
 {
-    public interface ITagRepository
+    public interface ITagRepository : IBaseRepository
     {
         List<Tag> GetAllTags();
         List<Tag> GetTagsByPostId(int postId);

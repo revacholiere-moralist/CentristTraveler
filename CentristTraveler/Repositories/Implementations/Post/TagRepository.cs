@@ -13,18 +13,8 @@ using System.Data;
 
 namespace CentristTraveler.Repositories.Implementations
 {
-    public class TagRepository: ITagRepository
+    public class TagRepository: BaseRepository, ITagRepository
     {
-        #region Private members
-        private IDbTransaction _transaction;
-        private IDbConnection _connection;
-        #endregion
-        public TagRepository(IDbTransaction transaction)
-        {
-            _transaction = transaction;
-            _connection = transaction.Connection;
-        }
-
         public List<Tag> GetAllTags()
         {
             string sql = @"SELECT [Id]

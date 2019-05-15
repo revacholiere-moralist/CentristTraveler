@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CentristTraveler.Repositories.Interfaces
 {
-    public interface IPostRepository
+    public interface IPostRepository : IBaseRepository
     {
         List<Post> GetAllPosts();
         List<Post> GetPostsByCreationDate(DateTime beginDate, DateTime endDate);

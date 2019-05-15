@@ -129,28 +129,28 @@ namespace CentristTraveler.Repositories.Implementations
             return user;
         }
 
-        public User GetHashedPassword(string login)
+        public string GetHashedPassword(string login)
         {
             string sql = @"SELECT [Password]
                             FROM User
                             WHERE (Username = @login OR Email = @login)";
-            User user = new User();
+            string hashedPassword = String.Empty;
 
             try
             {
-                user = _connection.Query<User>(sql,
+                hashedPassword = _connection.ExecuteScalar<string>(sql,
                     new
                     {
                         @login = login
                     },
-                    _transaction).FirstOrDefault();
+                    _transaction);
             }
             catch (Exception ex)
             {
-                user = new User();
+                hashedPassword = string.Empty;
                 // TODO: Add Error Log
             }
-            return user;
+            return hashedPassword;
         }
 
         public int Create(User user)

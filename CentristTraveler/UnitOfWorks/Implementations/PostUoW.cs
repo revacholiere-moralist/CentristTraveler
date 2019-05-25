@@ -18,43 +18,67 @@ namespace CentristTraveler.UnitOfWorks.Implementations
         private IPostRepository _postRepository;
         private ITagRepository _tagRepository;
         private IPostTagsRepository _postTagsRepository;
+        private ICategoryRepository _categoryRepository;
         #endregion
 
         #region Constructor
-        public PostUoW( IOptions<ConnectionStrings> connectionString,
+        public PostUoW(IOptions<ConnectionStrings> connectionString,
                         IPostRepository postRepository,
                         ITagRepository tagRepository,
-                        IPostTagsRepository postTagsRepository) : base(connectionString)
+                        IPostTagsRepository postTagsRepository,
+                        ICategoryRepository categoryRepository) : base(connectionString)
         {
-            
+
             _postRepository = postRepository;
             _tagRepository = tagRepository;
             _postTagsRepository = postTagsRepository;
+            _categoryRepository = categoryRepository;
 
         }
         #endregion
 
         public IPostRepository PostRepository
         {
-            get { return _postRepository; }
+            get
+            {
+                _postRepository.CreateTransaction(_transaction);
+                return _postRepository;
+            }
         }
         public ITagRepository TagRepository
         {
-            get { return _tagRepository; }
+            get
+            {
+                _tagRepository.CreateTransaction(_transaction);
+                return _tagRepository;
+            }
         }
         public IPostTagsRepository PostTagsRepository
         {
-            get { return _postTagsRepository; }
+            get
+            {
+                _postTagsRepository.CreateTransaction(_transaction);
+                return _postTagsRepository;
+            }
+        }
+        public ICategoryRepository CategoryRepository
+        {
+            get
+            {
+                _categoryRepository.CreateTransaction(_transaction);
+                return _categoryRepository;
+            }
         }
         public void Begin()
         {
             _connection.Open();
             _transaction = _connection.BeginTransaction();
 
-            _postRepository.CreateTransaction(_transaction);
-            _tagRepository.CreateTransaction(_transaction);
-            _postTagsRepository.CreateTransaction(_transaction);
+
+            
+            
+            
         }
-        
+
     }
 }

@@ -29,7 +29,10 @@ namespace CentristTraveler.Repositories.Implementations
                            ,@UpdatedBy
                            ,@UpdatedDate)";
             bool isSuccess = false;
-            
+            if (tags.Count == 0)
+            {
+                isSuccess = true;
+            }
             foreach (Tag tag in tags)
             {
                 try
@@ -66,7 +69,11 @@ namespace CentristTraveler.Repositories.Implementations
                             WHERE PostId = @PostId
                             AND TagId = @TagId";
             bool isSuccess = false;
-            
+
+            if (tags.Count == 0)
+            {
+                isSuccess = true;
+            }
             foreach (Tag tag in tags)
             {
                 try

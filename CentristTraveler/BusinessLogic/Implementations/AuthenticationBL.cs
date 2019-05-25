@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using CentristTraveler.Helper;
 using Microsoft.Extensions.Options;
 using CentristTraveler.Dto;
+using Newtonsoft.Json;
 
 namespace CentristTraveler.BusinessLogic.Implementations
 {
@@ -31,12 +32,17 @@ namespace CentristTraveler.BusinessLogic.Implementations
             {
                 string hashedPassword = _authenticationUoW.UserRepository.GetHashedPassword(login);
                 isAuthenticated = BCryptHelper.CheckPassword(password, hashedPassword);
+                
                 if (isAuthenticated)
                 {
+                    User user = _authenticationUoW.UserRepository.GetUserByLogin(login);
+                    List<string> roles = _authenticationUoW.UserRoleRepository.GetUserRoles(user.Id);
                     JwtHelper jwtHelper = new JwtHelper(_tokenConfig.Value.TokenSecurityKey,
                                                             _tokenConfig.Value.Issuer,
-                                                            _tokenConfig.Value.Audience);
-                    return jwtHelper.CreateToken();
+                                                            _tokenConfig.Value.Audience,
+                                                            user.Username,
+                                                            roles);
+                    return JsonConvert.SerializeObject(jwtHelper.CreateToken());
                 }
                 else
                 {
@@ -64,8 +70,12 @@ namespace CentristTraveler.BusinessLogic.Implementations
                     UpdatedBy = "admin",
                     UpdatedDate = DateTime.Now
                 };
-            
-                _authenticationUoW.UserRepository.Create(user);
+                
+                // hardcoded for now, give writer role to user
+                int newUserId = _authenticationUoW.UserRepository.Create(user);
+                List<Role> roles = userDto.Roles;
+
+                _authenticationUoW.UserRoleRepository.InsertUserRoles(newUserId, roles, user);
                 _authenticationUoW.Commit();
                 return true;
             }

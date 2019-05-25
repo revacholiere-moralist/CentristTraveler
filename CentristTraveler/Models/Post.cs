@@ -10,5 +10,9 @@ namespace CentristTraveler.Models
         public string Title { get; set; }
         public string Body { get; set; }
         public string ThumbnailPath { get; set; }
+        public string BannerPath { get; set; }
+        public string BannerText { get; set; }
+        public string PreviewText { get; set; }
+        public int CategoryId { get; set; }
     }
 }

@@ -42,14 +42,23 @@ namespace CentristTraveler
             #region Dependency Mapper
             //Dependency Mapper for UoW
             services.AddScoped<IPostUoW, PostUoW>();
+            services.AddScoped<IAuthenticationUoW, AuthenticationUoW>();
 
             //Dependency Mapper for Business Logic
             services.AddScoped<IPostBL, PostBL>();
+            services.AddScoped<IAuthenticationBL, AuthenticationBL>();
 
             //Dependency Mapper for Repositories
+            //=== Post Repository ===
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IPostTagsRepository, PostTagsRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository> ();
+
+            // === Auth Repository ===
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
             #endregion
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

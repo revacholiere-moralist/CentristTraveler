@@ -34,6 +34,9 @@ namespace CentristTraveler.BusinessLogic.Implementations
                         Body = post.Body,
                         Tags = tags,
                         ThumbnailPath = post.ThumbnailPath,
+                        BannerPath = post.BannerPath,
+                        PreviewText = post.PreviewText,
+                        CategoryId = post.CategoryId,
                         CreatedBy = post.CreatedBy,
                         CreatedDate = post.CreatedDate,
                         UpdatedBy = post.UpdatedBy,
@@ -66,6 +69,10 @@ namespace CentristTraveler.BusinessLogic.Implementations
                     Body = post.Body,
                     Tags = tags,
                     ThumbnailPath = post.ThumbnailPath,
+                    BannerPath = post.BannerPath,
+                    BannerText = post.BannerText,
+                    PreviewText = post.PreviewText,
+                    CategoryId = post.CategoryId,
                     CreatedBy = post.CreatedBy,
                     CreatedDate = post.CreatedDate,
                     UpdatedBy = post.UpdatedBy,
@@ -105,6 +112,10 @@ namespace CentristTraveler.BusinessLogic.Implementations
                     Title = postDto.Title,
                     Body = postDto.Title,
                     ThumbnailPath = postDto.ThumbnailPath,
+                    PreviewText = postDto.PreviewText,
+                    CategoryId = postDto.CategoryId,
+                    BannerPath = postDto.BannerPath,
+                    BannerText = postDto.BannerText,
                     CreatedBy = "admin",
                     CreatedDate = DateTime.Now,
                     UpdatedBy = "admin",
@@ -169,6 +180,10 @@ namespace CentristTraveler.BusinessLogic.Implementations
                 oldPost.Title = postDto.Title;
                 oldPost.Body = postDto.Body;
                 oldPost.ThumbnailPath = postDto.ThumbnailPath;
+                oldPost.BannerPath = postDto.BannerPath;
+                oldPost.BannerText = postDto.BannerText;
+                oldPost.CategoryId = postDto.CategoryId;
+                oldPost.PreviewText = postDto.PreviewText;
                 oldPost.CreatedBy = "admin";
                 oldPost.CreatedDate = DateTime.Now;
                 oldPost.UpdatedBy = "admin";
@@ -180,9 +195,11 @@ namespace CentristTraveler.BusinessLogic.Implementations
                 if (isSuccess)
                 {
                     List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(oldPost.Id);
+                    List<string> newTagsName = postDto.Tags.Select(x => x.Name).ToList();
+                    List<string> oldTagsName = tags.Select(x => x.Name).ToList();
                     foreach (Tag tag in tags)
                     {
-                        if (!postDto.Tags.Contains(tag))
+                        if (!newTagsName.Contains(tag.Name))
                         {
                             deletedTags.Add(tag);
                         }
@@ -205,7 +222,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                             newTags.Add(tag);
                         }
 
-                        else if (!tags.Contains(newTag))
+                        else if (!oldTagsName.Contains(newTag.Name))
                         {
                             newTags.Add(newTag);
                         }
@@ -240,14 +257,14 @@ namespace CentristTraveler.BusinessLogic.Implementations
             _postUoW.Begin();
             try
             {
-                isSuccess = _postUoW.PostRepository.Delete(id);
+                isSuccess = _postUoW.PostTagsRepository.DeletePostTagsByPostId(id); 
                 if (isSuccess)
                 {
-                    isSuccess = _postUoW.PostTagsRepository.DeletePostTagsByPostId(id);
+                    isSuccess = _postUoW.PostRepository.Delete(id);
                     _postUoW.Commit();
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 isSuccess = false;
                 _postUoW.Dispose();
@@ -255,5 +272,17 @@ namespace CentristTraveler.BusinessLogic.Implementations
             return isSuccess;
         }
 
+        public List<Category> GetAllCategories()
+        {
+            _postUoW.Begin();
+            try
+            {
+                return _postUoW.CategoryRepository.GetAll();
+            }
+            catch
+            {
+                return new List<Category>();
+            }
+        }
     }
 }

@@ -34,6 +34,22 @@
     <None Remove="ClientApp\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="ClientCentristTraveler\src\app\guards\auth.guard.ts" />
+    <None Remove="ClientCentristTraveler\src\app\guards\index.ts" />
+    <None Remove="ClientCentristTraveler\src\app\helpers\JwtInterceptor.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ClientCentristTraveler\src\app\pages\auth\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientCentristTraveler\src\app\guards\index.ts" />
+    <TypeScriptCompile Include="ClientCentristTraveler\src\app\guards\auth.guard.ts" />
+    <TypeScriptCompile Include="ClientCentristTraveler\src\app\helpers\JwtInterceptor.ts" />
+  </ItemGroup>
+
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">

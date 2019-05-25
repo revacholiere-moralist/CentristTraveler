@@ -22,6 +22,10 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[Title]
                           ,[Body]
                           ,[ThumbnailPath]
+                          ,[PreviewText]
+                          ,[BannerPath]
+                          ,[BannerText]
+                          ,[CategoryId]
                           ,[CreatedDate]
                           ,[CreatedBy]
                           ,[UpdatedDate]
@@ -46,10 +50,14 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[Title]
                           ,[Body]
                           ,[ThumbnailPath]
+                          ,[PreviewText]
+                          ,[BannerPath]
+                          ,[BannerText]
+                          ,[CategoryId]
                           ,[CreatedDate]
                           ,[CreatedBy]
                           ,[UpdatedDate]
-                          ,[UpdatedBy] FROM Post
+                          ,[UpdatedBy]  FROM Post
                         WHERE Id = @Id";
             Post post = new Post();
             
@@ -78,14 +86,18 @@ namespace CentristTraveler.Repositories.Implementations
 
         public List<Post> GetPostsByCreationDate(DateTime beginDate, DateTime endDate)
         {
-            string sql = @"SELECT [Id]
+            string sql = @"SELECT SELECT [Id]
                           ,[Title]
                           ,[Body]
                           ,[ThumbnailPath]
+                          ,[PreviewText]
+                          ,[BannerPath]
+                          ,[BannerText]
+                          ,[CategoryId]
                           ,[CreatedDate]
                           ,[CreatedBy]
                           ,[UpdatedDate]
-                          ,[UpdatedBy] FROM Post
+                          ,[UpdatedBy]  FROM Post
                         WHERE CreatedDate >= @BeginDate AND CreatedDate <= @EndDate
                         ORDER BY CreatedDate";
             List<Post> posts = new List<Post>();
@@ -115,6 +127,10 @@ namespace CentristTraveler.Repositories.Implementations
                        ([Title]
                        ,[Body]
                        ,[ThumbnailPath]
+                       ,[PreviewText]
+                       ,[BannerPath]
+                       ,[BannerText]
+                       ,[CategoryId]
                        ,[CreatedDate]
                        ,[CreatedBy]
                        ,[UpdatedDate]
@@ -123,6 +139,10 @@ namespace CentristTraveler.Repositories.Implementations
                        (@Title
                        ,@Body
                        ,@ThumbnailPath
+                       ,@PreviewText
+                       ,@BannerPath
+                       ,@BannerText
+                       ,@CategoryId
                        ,@CreatedDate
                        ,@CreatedBy
                        ,@UpdatedDate
@@ -136,6 +156,10 @@ namespace CentristTraveler.Repositories.Implementations
                     @Title = post.Title,
                     @Body = post.Body,
                     @ThumbnailPath = post.ThumbnailPath,
+                    @PreviewText = post.PreviewText,
+                    @BannerPath = post.BannerPath,
+                    @BannerText = post.BannerText,
+                    @CategoryId = post.CategoryId,
                     @CreatedDate = post.CreatedDate,
                     @CreatedBy = post.CreatedBy,
                     @UpdatedDate = post.UpdatedDate,
@@ -152,6 +176,10 @@ namespace CentristTraveler.Repositories.Implementations
                            SET [Title] = @Title
                               ,[Body] = @Body
                               ,[ThumbnailPath] = @ThumbnailPath
+                              ,[BannerPath] = @BannerPath
+                              ,[BannerText] = @BannerText
+                              ,[PreviewText] = @PreviewText
+                              ,[CategoryId] = @CategoryId
                               ,[UpdatedDate] = @UpdatedDate
                               ,[UpdatedBy] = @UpdatedBy
                          WHERE Id = @Id";
@@ -165,6 +193,10 @@ namespace CentristTraveler.Repositories.Implementations
                             @Title = post.Title,
                             @Body = post.Body,
                             @ThumbnailPath = post.ThumbnailPath,
+                            @BannerPath = post.BannerPath,
+                            @BannerText = post.BannerText,
+                            @PreviewText = post.PreviewText,
+                            @CategoryId = post.CategoryId,
                             @UpdatedDate = post.UpdatedDate,
                             @UpdatedBy = post.UpdatedBy
                         },

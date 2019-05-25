@@ -132,7 +132,7 @@ namespace CentristTraveler.Repositories.Implementations
         public string GetHashedPassword(string login)
         {
             string sql = @"SELECT [Password]
-                            FROM User
+                            FROM [dbo].[User]
                             WHERE (Username = @login OR Email = @login)";
             string hashedPassword = String.Empty;
 
@@ -151,6 +151,31 @@ namespace CentristTraveler.Repositories.Implementations
                 // TODO: Add Error Log
             }
             return hashedPassword;
+        }
+
+        public User GetUserByLogin(string login)
+        {
+            string sql = @"SELECT [Id]
+                            ,[Username]
+                            FROM [dbo].[User]
+                            WHERE (Username = @login OR Email = @login)";
+            User user = new User();
+
+            try
+            {
+                user = _connection.Query<User>(sql,
+                    new
+                    {
+                        @login = login
+                    },
+                    _transaction).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                user = new User();
+                // TODO: Add Error Log
+            }
+            return user;
         }
 
         public int Create(User user)

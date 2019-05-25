@@ -40,6 +40,7 @@ namespace CentristTraveler.Repositories.Implementations
                 },
                 _transaction).FirstOrDefault();
         }
+
         public int Create(Role role)
         {
             string sql = @"INSERT INTO [dbo].[Role]

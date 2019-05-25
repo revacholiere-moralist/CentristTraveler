@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CentristTraveler.BusinessLogic.Interfaces;
 using CentristTraveler.Dto;
 using CentristTraveler.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,6 +35,7 @@ namespace CentristTraveler.Controllers
 
         [HttpPost]
         [Route("AddPost")]
+        [Authorize(Roles = "Writer")]
         public IActionResult AddPost([FromBody] PostDto postDto)
         {
             if (!ModelState.IsValid)
@@ -90,6 +92,14 @@ namespace CentristTraveler.Controllers
 
             return Ok(_postBL.Delete(id));
         }
+
+        [HttpGet]
+        [Route("GetAllCategories")]
+        public IActionResult GetAllCategories()
+        {
+            return Ok(_postBL.GetAllCategories());
+        }
+
 
     }
 }

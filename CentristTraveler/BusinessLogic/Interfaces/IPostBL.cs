@@ -16,5 +16,7 @@ namespace CentristTraveler.BusinessLogic.Interfaces
         bool Create(PostDto postDto);
         bool Update(PostDto postDto);
         bool Delete(int id);
+        List<Category> GetAllCategories();
+        
     }
 }

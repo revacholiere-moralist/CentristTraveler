@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using CentristTraveler.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -16,14 +17,20 @@ namespace CentristTraveler.Helper
         private string _securityKey;
         private string _issuer;
         private string _audience;
+        private string _username;
+        private List<string> _roles;
         
         public JwtHelper(string securityKey,
                             string issuer,
-                            string audience)
+                            string audience,
+                            string username,
+                            List<string> roles)
         {
             _securityKey = securityKey;
             _issuer = issuer;
             _audience = audience;
+            _username = username;
+            _roles = roles;
         }
         public string CreateToken()
         {
@@ -31,15 +38,22 @@ namespace CentristTraveler.Helper
             {
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_securityKey));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha512);
+                List<Claim> claims = new List<Claim>();
+                claims.Add(new Claim(ClaimTypes.Name, _username));
 
+                foreach (string role in _roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+                }
+                
                 var tokenOptions = new JwtSecurityToken(
                     issuer: _issuer,
                     audience: _audience,
-                    claims: new List<Claim>(),
-                    expires: DateTime.Now.AddDays(14),
+                    claims: claims,
+                    expires: DateTime.Now.AddDays(1),
                     signingCredentials: signinCredentials
                 );
-
+                
                 return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
             }
             catch (Exception ex)

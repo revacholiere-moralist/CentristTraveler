@@ -14,6 +14,7 @@ namespace CentristTraveler.Repositories.Interfaces
 
         User GetUserByEmail(string email);
         string GetHashedPassword(string login);
+        User GetUserByLogin(string login);
         int Create(User user);
         bool Update(User user);
         bool Delete(int id);

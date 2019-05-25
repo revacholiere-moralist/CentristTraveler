@@ -11,7 +11,21 @@ namespace CentristTraveler.Repositories.Implementations
 {
     public class UserRoleRepository : BaseRepository, IUserRoleRepository
     {
-
+        public List<string> GetUserRoles(int userId)
+        {
+            string sql = @"SELECT Role.Name
+                            FROM [dbo].[Mapping_User_Role] AS UserRole
+                            JOIN [dbo].[Role] AS Role ON UserRole.RoleId = Role.Id
+                            WHERE UserRole.UserId = @UserId";
+            
+            List<string> roles = _connection.Query<string>(sql,
+                        new
+                        {
+                            @UserId = userId
+                        },
+                        _transaction).ToList();
+            return roles;
+        }
         public bool InsertUserRoles(int userId, List<Role> roles, User user)
         {
             string sql = @"INSERT INTO [dbo].[Mapping_User_Role]
@@ -39,9 +53,9 @@ namespace CentristTraveler.Repositories.Implementations
                         {
                             @UserId = userId,
                             @RoleId = role.Id,
-                            @CreatedBy = role.CreatedBy,
+                            @CreatedBy = user.CreatedBy,
                             @CreatedDate = DateTime.Now,
-                            @UpdatedBy = role.UpdatedBy,
+                            @UpdatedBy = user.UpdatedBy,
                             @UpdatedDate = DateTime.Now
                         },
                         _transaction);

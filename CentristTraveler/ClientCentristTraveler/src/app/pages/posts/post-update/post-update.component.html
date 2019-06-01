@@ -1,0 +1,141 @@
+<div class="container-contact100">
+  <div class="wrap-contact100">
+    <form [formGroup]="postForm" (ngSubmit)="onFormSubmit(postForm.value)" class="contact100-form validate-form">
+      <input hidden formControlName="id">
+      <span class="contact100-form-title">
+        Edit Post
+      </span>
+
+      <div class="wrap-input100 rs1-wrap-input100 validate-input" data-validate="Name is required">
+        <span class="label-input100">Title</span>
+        <input formControlName="title" class="input100" type="text" name="title" placeholder="Title">
+        <span class="focus-input100"></span>
+      </div>
+
+      <div class="wrap-input100 rs1-wrap-input100 validate-input" data-validate="Name is required">
+        <span class="label-input100">Category</span>
+        <select formControlName="category_id" class="input100 fixed" name="category_id" placeholder="Category">
+          <option value="0">--All--</option>
+          <option *ngFor="let category of categories" value={{category.id}}>
+            {{category.name}}
+          </option>
+        </select>
+        <span class="focus-input100"></span>
+      </div>
+
+      <div class="wrap-input100 validate-input" data-validate="Message is required">
+        <span class="label-input100">Message</span>
+        <div formControlName="body" class="input100" data="<p>Body</p>"></div>
+        <span class="focus-input100"></span>
+      </div>
+
+      <div class="wrap-input100 validate-input" data-validate="Message is required">
+
+        <input #file type="file" (change)="upload(file.files, 'thumbnail_path')" />
+        <span class="focus-input100"></span>
+        <span style="font-weight:bold;color:green;" *ngIf="progress > 0 && progress < 100">
+          {{progress}}%
+        </span>
+
+        <span style="font-weight:bold;color:green;" *ngIf="message">
+          {{message}}
+        </span>
+
+        <input formControlName="thumbnail_path" class="input100" type="text" name="thumbnail-path" disabled [(ngModel)]='thumbnail_path' placeholder="Thumbnail Path">
+        <span class="focus-input100"></span>
+
+      </div>
+
+      <div class="wrap-input100 validate-input" data-validate="Message is required">
+
+        <input #file_banner type="file" (change)="upload(file_banner.files, 'banner_path')" />
+        <span class="focus-input100"></span>
+        <span style="font-weight:bold;color:green;" *ngIf="progressBanner > 0 && progressBanner < 100">
+          {{progressBanner}}%
+        </span>
+
+        <span style="font-weight:bold;color:green;" *ngIf="messageBanner">
+          {{messageBanner}}
+        </span>
+
+        <input formControlName="banner_path" class="input100" type="text" name="banner-path" disabled placeholder="Banner Path">
+        <span class="focus-input100"></span>
+
+      </div>
+
+      <div class="wrap-input100 validate-input" data-validate="Message is required">
+        <span class="label-input100">Banner Text</span>
+        <input formControlName="banner_text" class="input100" type="text" data="<p>Banner Text</p>">
+        <span class="focus-input100"></span>
+      </div>
+
+
+      <div class="wrap-input100">
+        <mat-form-field class="example-chip-list">
+          <mat-chip-list #chipList>
+            <mat-chip *ngFor="let tag of tags" [selectable]="selectable"
+                      [removable]="removable" (removed)="remove(tag)">
+              {{tag.name}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="New tag..."
+                   [matChipInputFor]="chipList"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   (matChipInputTokenEnd)="add($event)">
+          </mat-chip-list>
+        </mat-form-field>
+      </div>
+
+      <div class="container-contact100-form-btn">
+        <button type="submit" [disabled]="!postForm.valid" class="contact100-form-btn">
+          <span>
+            Submit
+            <i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+<!--<div class="example-container mat-elevation-z8">
+  <div class="example-loading-shade"
+       *ngIf="isLoadingResults">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div>
+
+  <mat-card class="example-card">
+    <form [formGroup]="postForm" (ngSubmit)="onFormSubmit(postForm.value)">
+      <input hidden formControlName="id"
+             >
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Title" formControlName="title"
+               [errorStateMatcher]="matcher">
+        <mat-error>
+          <span *ngIf="!postForm.get('title').valid && postForm.get('title').touched">Please enter Title</span>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Body" formControlName="body"
+               [errorStateMatcher]="matcher">
+        <mat-error>
+          <span *ngIf="!postForm.get('body').valid && postForm.get('body').touched">Please enter Body</span>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Thumbnail Path" formControlName="thumbnail_path"
+               [errorStateMatcher]="matcher">
+        <mat-error>
+          <span *ngIf="!postForm.get('thumbnail_path').valid && postForm.get('thumbnail_path').touched">Please enter Thumbnail Path</span>
+        </mat-error>
+      </mat-form-field>
+      <div class="button-row">
+        <button type="submit" [disabled]="!postForm.valid" mat-flat-button color="primary"><mat-icon>save</mat-icon></button>
+      </div>
+    </form>
+  </mat-card>
+</div>-->

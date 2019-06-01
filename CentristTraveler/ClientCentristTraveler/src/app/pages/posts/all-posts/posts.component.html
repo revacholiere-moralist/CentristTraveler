@@ -1,0 +1,46 @@
+<section class="mb-30px">
+  <!--================Hero Banner start =================-->
+  <section class="mb-30px">
+    <div class="container banner">
+      <div class="hero-banner" style="background-image:url(/assets/img/banner/hero-banner-2.jpg)">
+        <div class="hero-banner__content">
+          <h1>Joseph and Mary</h1>
+          <h4>What we talk about when we talk about Travelling and Pop Culture</h4>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--================Hero Banner end =================-->
+</section>
+<section class="blog-post-area section-margin mt-4">
+  <div class="container post">
+
+    <div class="row">
+      <div class="col-lg-8 content">
+        <div *ngFor="let row of data" class="single-recent-blog-post">
+          <div class="thumb">
+            <img class="img-fluid" [src]="row.thumbnail_path" alt="">
+            <!--<ul class="thumb-info">
+              <li><a href="#"><i class="ti-user"></i>Admin</a></li>
+              <li><a href="#"><i class="ti-notepad"></i>January 12,2019</a></li>
+              <li><a href="#"><i class="ti-themify-favicon"></i>2 Comments</a></li>
+            </ul>-->
+          </div>
+          <div class="details mt-20">
+              <h3>
+                {{row.title}}
+              </h3>
+            <pre class="tag-list-inline">Tag: <a *ngFor="let tag of row.tags" href="/post/posts/tag/{{tag.name}}">{{tag.name}} </a></pre>
+            <div [innerHTML] = "row.preview_text"></div>
+            <a class="button" [routerLink]="['/post/detail', row.id]">Read More <i class="ti-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 sidebar-widgets content">
+        <div class="widget-wrap">
+          <app-sidebar (messageEvent)="receiveMessage($event)"></app-sidebar>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

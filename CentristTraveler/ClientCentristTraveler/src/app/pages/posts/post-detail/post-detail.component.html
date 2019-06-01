@@ -1,0 +1,75 @@
+<!--================Hero Banner start =================-->
+<section class="mb-30px">
+  <div class="container banner">
+    <div class="hero-banner" [ngStyle]="style">
+      <div class="hero-banner__content">
+        <h1>{{post.banner_text}}</h1>
+      </div>
+    </div>
+  </div>
+</section>
+<!--================Hero Banner end =================-->
+
+<section class="blog-post-area section-margin">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 content">
+        <div class="main_blog_details">
+          <img class="img-fluid" [src]="post.thumbnail_path" alt="">
+          <h4>{{post.title}}</h4>
+          <div class="user_details">
+            <div class="float-left">
+              <a href="#" *ngFor="let tag of post.tags">{{tag.name}}</a>
+            </div>
+            <div class="float-right mt-sm-0 mt-3">
+              <div class="media">
+                <div class="media-body">
+                  <h5>{{post.created_by}}</h5>
+                  <p>{{post.created_date | date: 'MMM.dd.yyyy'}}</p>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="post-text" [innerHTML]="post.body"></div>
+          <a class="button post-btn" *ngIf="isWriter" [routerLink]="['/post/update', post?.id]">Edit</a>
+          <a class="button post-btn" href="" *ngIf="isWriter" (click)="deletePost(post?.id)">Delete</a>
+        </div>
+      </div>
+      <div class="col-lg-4 sidebar-widgets content">
+        <div class="widget-wrap">
+          <app-sidebar></app-sidebar>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!--<div class="example-container mat-elevation-z8">
+<div class="example-loading-shade"
+     *ngIf="isLoadingResults">
+  <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+</div>
+<div class="button-row">
+  <a mat-flat-button color="primary" [routerLink]="['/post/posts']"><mat-icon>list</mat-icon></a>
+</div>
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title><h2>{{post.title}}</h2></mat-card-title>
+    <mat-card-subtitle>{{post.body}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <dl>
+      <dt>Thumbnail Path:</dt>
+      <dd>{{post.thumbnail_path}}</dd>
+      <dt>Updated At:</dt>
+      <dd>{{post.updated_date | date}}</dd>
+    </dl>
+  </mat-card-content>
+  <mat-card-actions>
+    <a mat-flat-button color="primary" [routerLink]="['/post/update', post?.id]"><mat-icon>edit</mat-icon></a>
+    <a mat-flat-button color="warn" (click)="deletePost(post.id)"><mat-icon>delete</mat-icon></a>
+  </mat-card-actions>
+</mat-card>
+</div>-->

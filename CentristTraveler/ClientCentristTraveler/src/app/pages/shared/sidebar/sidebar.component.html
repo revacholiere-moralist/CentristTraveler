@@ -1,0 +1,56 @@
+<div class="single-sidebar-widget tag_cloud_widget">
+  <h4>Search By Tags</h4>
+
+  <form [formGroup]="searchTagForm" (ngSubmit)="onFormSubmit(searchTagForm.value)" class="contact100-form validate-form">
+    <div class="row">
+      <div class="wrap-input100 rs1-wrap-input100 validate-input col-md-10" data-validate="Tag is required">
+        <input formControlName="tag_name" class="input100" type="text" name="tag" placeholder="Insert Tags">
+        <span class="focus-input100"></span>
+      </div>
+
+      <div class="container-contact100-form-btn col-md-2">
+        <button type="submit" class="contact100-form-btn">
+          <span>
+            <i class="fa fa-search m-l-7" aria-hidden="false"></i>
+          </span>
+        </button>
+      </div>
+    </div>
+  </form>
+
+
+  <h4 class="single-sidebar-widget__title">Popular Tags</h4>
+  <ul *ngFor="let tag of tags" class="list">
+    <li>
+      <a href="/post/posts/tag/{{tag.name}}">{{tag.name}}</a>
+    </li>
+  </ul>
+</div>
+
+<div class="single-sidebar-widget tag_cloud_widget">
+  <h4>Search by Posts</h4>
+
+  <form [formGroup]="searchPostForm" (ngSubmit)="onPostFormSubmit(searchPostForm.value)" class="contact100-form validate-form">
+    <div class="row">
+      <div class="wrap-input100 rs1-wrap-input100 validate-input col-md-10" data-validate="Tag is required">
+        <input formControlName="post_search" class="input100" type="text" name="post_search" placeholder="Insert Title or Body">
+        <span class="focus-input100"></span>
+      </div>
+
+      <div class="container-contact100-form-btn col-md-2">
+        <button type="submit" class="contact100-form-btn">
+          <span>
+            <i class="fa fa-search m-l-7" aria-hidden="false"></i>
+          </span>
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <h4 class="single-sidebar-widget__title">Latest Posts</h4>
+  <ul *ngFor="let post of posts" class="list">
+    <li>
+      <a href="/post/posts/detail/{{post.id}}">{{post.title}}</a>
+    </li>
+  </ul>
+</div>

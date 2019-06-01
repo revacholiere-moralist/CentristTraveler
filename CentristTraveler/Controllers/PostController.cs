@@ -25,11 +25,19 @@ namespace CentristTraveler.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        [HttpGet]
-        [Route("GetAllPosts")]
-        public IEnumerable<PostDto> GetAllPosts()
+        [HttpPost]
+        [Route("SearchPosts")]
+        public IEnumerable<PostDto> SearchPosts([FromBody] PostSearchParamDto searchParam)
         {
-            List<PostDto> postDtos = _postBL.GetAllPosts();
+            List<PostDto> postDtos = _postBL.SearchPosts(searchParam);
+            return postDtos;
+        }
+
+        [HttpGet]
+        [Route("GetLatestPosts")]
+        public IEnumerable<PostDto> GetLatestPosts()
+        {
+            List<PostDto> postDtos = _postBL.GetLatestPosts();
             return postDtos;
         }
 
@@ -100,6 +108,11 @@ namespace CentristTraveler.Controllers
             return Ok(_postBL.GetAllCategories());
         }
 
-
+        [HttpGet]
+        [Route("GetPopularTags")]
+        public IActionResult GetPopularTags()
+        {
+            return Ok(_postBL.GetPopularTags());
+        }
     }
 }

@@ -7,6 +7,7 @@ namespace CentristTraveler.Models
 {
     public class Role : BaseModel
     {
+        public int RoleId { get; set; }
         public string Name { get; set; }
     }
 }

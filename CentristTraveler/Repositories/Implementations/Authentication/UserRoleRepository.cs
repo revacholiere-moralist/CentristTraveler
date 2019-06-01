@@ -52,7 +52,7 @@ namespace CentristTraveler.Repositories.Implementations
                         new
                         {
                             @UserId = userId,
-                            @RoleId = role.Id,
+                            @RoleId = role.RoleId,
                             @CreatedBy = user.CreatedBy,
                             @CreatedDate = DateTime.Now,
                             @UpdatedBy = user.UpdatedBy,
@@ -88,7 +88,7 @@ namespace CentristTraveler.Repositories.Implementations
                         new
                         {
                             @UserId = userId,
-                            @RoleId = role.Id
+                            @RoleId = role.RoleId
                         },
                         _transaction);
                     if (affectedRows > 0)

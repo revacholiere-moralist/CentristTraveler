@@ -155,7 +155,7 @@ namespace CentristTraveler.Repositories.Implementations
 
         public User GetUserByLogin(string login)
         {
-            string sql = @"SELECT [Id]
+            string sql = @"SELECT [Id] AS UserId
                             ,[Username]
                             FROM [dbo].[User]
                             WHERE (Username = @login OR Email = @login)";

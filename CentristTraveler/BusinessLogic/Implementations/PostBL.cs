@@ -17,19 +17,19 @@ namespace CentristTraveler.BusinessLogic.Implementations
         {
             _postUoW = postUoW;
         }
-        public List<PostDto> GetAllPosts()
+        public List<PostDto> GetLatestPosts()
         {
             _postUoW.Begin();
             try
             {
-                List<Post> posts = _postUoW.PostRepository.GetAllPosts();
+                List<Post> posts = _postUoW.PostRepository.GetLatestPosts();
                 List<PostDto> postDtos = new List<PostDto>();
                 foreach (Post post in posts)
                 {
-                    List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(post.Id);
+                    List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(post.PostId);
                     PostDto postDto = new PostDto
                     {
-                        Id = post.Id,
+                        Id = post.PostId,
                         Title = post.Title,
                         Body = post.Body,
                         Tags = tags,
@@ -54,17 +54,50 @@ namespace CentristTraveler.BusinessLogic.Implementations
             }
             
         }
-
+        public List<PostDto> SearchPosts(PostSearchParamDto searchParam)
+        {
+            var postDtos = new List<PostDto>();
+            _postUoW.Begin();
+            try
+            {
+                List<Post> posts = _postUoW.PostRepository.SearchPosts(searchParam);
+                foreach (Post post in posts)
+                {
+                    List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(post.PostId);
+                    PostDto postDto = new PostDto
+                    {
+                        Id = post.PostId,
+                        Title = post.Title,
+                        Body = post.Body,
+                        Tags = tags,
+                        ThumbnailPath = post.ThumbnailPath,
+                        BannerPath = post.BannerPath,
+                        PreviewText = post.PreviewText,
+                        CategoryId = post.CategoryId,
+                        CreatedBy = post.CreatedBy,
+                        CreatedDate = post.CreatedDate,
+                        UpdatedBy = post.UpdatedBy,
+                        UpdatedDate = post.UpdatedDate
+                    };
+                    postDtos.Add(postDto);
+                }
+            }
+            catch (Exception ex)
+            {
+                postDtos = new List<PostDto>();
+            }
+            return postDtos;
+        }
         public PostDto GetPostById(int id)
         {
             _postUoW.Begin();
             try
             {
                 Post post = _postUoW.PostRepository.GetPostById(id);
-                List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(post.Id);
+                List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(post.PostId);
                 PostDto postDto = new PostDto
                 {
-                    Id = post.Id,
+                    Id = post.PostId,
                     Title = post.Title,
                     Body = post.Body,
                     Tags = tags,
@@ -90,16 +123,6 @@ namespace CentristTraveler.BusinessLogic.Implementations
 
         }
 
-        public List<PostDto> GetPostsByCollaborators(List<string> username)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<PostDto> GetPostsByCreationDate(DateTime beginDate, DateTime endDate)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool Create(PostDto postDto)
         {
             bool isSuccess = false;
@@ -110,7 +133,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                 Post post = new Post
                 {
                     Title = postDto.Title,
-                    Body = postDto.Title,
+                    Body = postDto.Body,
                     ThumbnailPath = postDto.ThumbnailPath,
                     PreviewText = postDto.PreviewText,
                     CategoryId = postDto.CategoryId,
@@ -138,7 +161,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                             int newTagId = _postUoW.TagRepository.Create(tag);
                             Tag newTag = new Tag
                             {
-                                Id = newTagId,
+                                TagId = newTagId,
                                 Name = tag.Name
                             };
                             tags.Add(newTag);
@@ -194,7 +217,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                 List<Tag> deletedTags = new List<Tag>();
                 if (isSuccess)
                 {
-                    List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(oldPost.Id);
+                    List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(oldPost.PostId);
                     List<string> newTagsName = postDto.Tags.Select(x => x.Name).ToList();
                     List<string> oldTagsName = tags.Select(x => x.Name).ToList();
                     foreach (Tag tag in tags)
@@ -216,7 +239,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                             int newTagId = _postUoW.TagRepository.Create(newTag);
                             Tag tag = new Tag
                             {
-                                Id = newTagId,
+                                TagId = newTagId,
                                 Name = newTag.Name
                             };
                             newTags.Add(tag);
@@ -228,10 +251,10 @@ namespace CentristTraveler.BusinessLogic.Implementations
                         }
                     }
 
-                    isSuccess = _postUoW.PostTagsRepository.InsertPostTags(oldPost.Id, newTags, oldPost);
+                    isSuccess = _postUoW.PostTagsRepository.InsertPostTags(oldPost.PostId, newTags, oldPost);
                     if (isSuccess)
                     {
-                        isSuccess = _postUoW.PostTagsRepository.DeletePostTags(oldPost.Id, deletedTags);
+                        isSuccess = _postUoW.PostTagsRepository.DeletePostTags(oldPost.PostId, deletedTags);
                     }
                     if (isSuccess)
                     {
@@ -272,16 +295,50 @@ namespace CentristTraveler.BusinessLogic.Implementations
             return isSuccess;
         }
 
-        public List<Category> GetAllCategories()
+        public List<CategoryDto> GetAllCategories()
         {
             _postUoW.Begin();
             try
             {
-                return _postUoW.CategoryRepository.GetAll();
+                var categoryDtos = new List<CategoryDto>();
+                var categories = _postUoW.CategoryRepository.GetAll();
+                foreach(Category category in categories)
+                {
+                    var categoryDto = new CategoryDto
+                    {
+                        Id = category.CategoryId,
+                        Name = category.Name
+                    };
+                    categoryDtos.Add(categoryDto);
+                }
+                return categoryDtos;
             }
             catch
             {
-                return new List<Category>();
+                return new List<CategoryDto>();
+            }
+        }
+        public List<TagDto> GetPopularTags()
+        {
+            _postUoW.Begin();
+            try
+            {
+                var tagDtos = new List<TagDto>();
+                var tags = _postUoW.TagRepository.GetPopularTags();
+                foreach (Tag tag in tags)
+                {
+                    var tagDto = new TagDto 
+                    {
+                        Id = tag.TagId,
+                        Name = tag.Name
+                    };
+                    tagDtos.Add(tagDto);
+                }
+                return tagDtos;
+            }
+            catch
+            {
+                return new List<TagDto>();
             }
         }
     }

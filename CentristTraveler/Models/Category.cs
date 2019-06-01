@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace CentristTraveler.Models
 {
-    public class Category : BaseModel
+    public class Category
     {
+        public int CategoryId { get; set; }
         public string Name { get; set; }
     }
 }

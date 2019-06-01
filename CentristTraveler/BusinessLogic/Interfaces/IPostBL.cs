@@ -9,14 +9,15 @@ namespace CentristTraveler.BusinessLogic.Interfaces
 {
     public interface IPostBL
     {
-        List<PostDto> GetAllPosts();
-        List<PostDto> GetPostsByCreationDate(DateTime beginDate, DateTime endDate);
-        List<PostDto> GetPostsByCollaborators(List<string> username);
+        List<PostDto> GetLatestPosts();
+        List<PostDto> SearchPosts(PostSearchParamDto searchParam);
+        
         PostDto GetPostById(int id);
         bool Create(PostDto postDto);
         bool Update(PostDto postDto);
         bool Delete(int id);
-        List<Category> GetAllCategories();
+        List<CategoryDto> GetAllCategories();
+        List<TagDto> GetPopularTags();
         
     }
 }

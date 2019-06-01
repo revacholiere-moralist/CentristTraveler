@@ -10,15 +10,16 @@ using Microsoft.Extensions.Options;
 using Dapper;
 using CentristTraveler.Repositories.Interfaces;
 using System.Data;
+using CentristTraveler.Dto;
 
 namespace CentristTraveler.Repositories.Implementations
 {
     public class PostRepository : BaseRepository, IPostRepository
     {
         
-        public List<Post> GetAllPosts()
+        public List<Post> GetLatestPosts()
         {
-            string sql = @"SELECT [Id]
+            var sql = @"SELECT TOP 5 [Id] AS PostId
                           ,[Title]
                           ,[Body]
                           ,[ThumbnailPath]
@@ -31,6 +32,7 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[UpdatedDate]
                           ,[UpdatedBy] FROM Post
                             ORDER BY UpdatedDate DESC";
+            
             List<Post> posts = new List<Post>();
 
             try
@@ -44,9 +46,56 @@ namespace CentristTraveler.Repositories.Implementations
             return posts;
         }
 
+        public List<Post> SearchPosts(PostSearchParamDto searchParam)
+        {
+            string sql = @"SELECT DISTINCT Post.[Id] As PostId
+                          ,Post.[Title]
+                          ,Post.[Body]
+                          ,Post.[ThumbnailPath]
+                          ,Post.[PreviewText]
+                          ,Post.[BannerPath]
+                          ,Post.[BannerText]
+                          ,Post.[CategoryId]
+                          ,Post.[CreatedDate]
+                          ,Post.[CreatedBy]
+                          ,Post.[UpdatedDate]
+                          ,Post.[UpdatedBy]
+                            FROM Post AS Post
+                            INNER JOIN Mapping_Post_Tag AS PostTag on Post.Id = PostTag.PostId
+                            INNER JOIN Master_Tag AS Tag ON Tag.Id = PostTag.TagId
+                            WHERE ((@Title = '' OR Post.Title LIKE @Title) OR
+                                (@Body = '' OR Post.Body LIKE @Body)) AND
+                                (@CategoryId = 0 OR Post.CategoryId = @CategoryId) AND
+                                (@Tag = '' OR Tag.Name LIKE @Tag)
+                               
+                            ORDER BY UpdatedDate DESC";
+            List<Post> posts = new List<Post>();
+
+            try
+            {
+                var postDictionary = new Dictionary<int, Post>();
+                posts = _connection.Query<Post>(sql,
+                    new
+                    {
+                        @Title = "%" + searchParam.Title + "%",
+                        @Body = "%" + searchParam.Body + "%",
+                        @CategoryId = searchParam.CategoryId,
+                        Tag = "%" + searchParam.Tag + "%"
+                        
+                    },
+                    _transaction
+                    ).ToList();
+            }
+            catch (Exception ex)
+            {
+                posts = new List<Post>();
+            }
+            return posts;
+        }
+
         public Post GetPostById(int id)
         {
-            string sql = @"SELECT [Id]
+            string sql = @"SELECT [Id] As PostId
                           ,[Title]
                           ,[Body]
                           ,[ThumbnailPath]
@@ -79,47 +128,6 @@ namespace CentristTraveler.Repositories.Implementations
             return post;
         }
 
-        public List<Post> GetPostsByCollaborators(List<string> username)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Post> GetPostsByCreationDate(DateTime beginDate, DateTime endDate)
-        {
-            string sql = @"SELECT SELECT [Id]
-                          ,[Title]
-                          ,[Body]
-                          ,[ThumbnailPath]
-                          ,[PreviewText]
-                          ,[BannerPath]
-                          ,[BannerText]
-                          ,[CategoryId]
-                          ,[CreatedDate]
-                          ,[CreatedBy]
-                          ,[UpdatedDate]
-                          ,[UpdatedBy]  FROM Post
-                        WHERE CreatedDate >= @BeginDate AND CreatedDate <= @EndDate
-                        ORDER BY CreatedDate";
-            List<Post> posts = new List<Post>();
-            
-            try
-            {
-                posts = _connection.Query<Post>(sql,
-                    new
-                    {
-                        @BeginDate = beginDate,
-                        @EndDate = endDate
-                    },
-                    _transaction).ToList();
-            }
-            catch
-            {
-                posts = new List<Post>();
-                //TODO: Add error log
-            }
-            
-            return posts;
-        }
 
         public int Create(Post post)
         {
@@ -189,7 +197,7 @@ namespace CentristTraveler.Repositories.Implementations
             int affectedRows = _connection.Execute(sql,
                         new
                         {
-                            @Id = post.Id,
+                            @Id = post.PostId,
                             @Title = post.Title,
                             @Body = post.Body,
                             @ThumbnailPath = post.ThumbnailPath,

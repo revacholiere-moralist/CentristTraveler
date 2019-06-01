@@ -36,7 +36,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                 if (isAuthenticated)
                 {
                     User user = _authenticationUoW.UserRepository.GetUserByLogin(login);
-                    List<string> roles = _authenticationUoW.UserRoleRepository.GetUserRoles(user.Id);
+                    List<string> roles = _authenticationUoW.UserRoleRepository.GetUserRoles(user.UserId);
                     JwtHelper jwtHelper = new JwtHelper(_tokenConfig.Value.TokenSecurityKey,
                                                             _tokenConfig.Value.Issuer,
                                                             _tokenConfig.Value.Audience,

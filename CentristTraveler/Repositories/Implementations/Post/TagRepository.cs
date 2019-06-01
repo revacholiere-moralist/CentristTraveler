@@ -17,7 +17,7 @@ namespace CentristTraveler.Repositories.Implementations
     {
         public List<Tag> GetAllTags()
         {
-            string sql = @"SELECT [Id]
+            string sql = @"SELECT [Id] AS TagId
                           ,[Name]
                           ,[CreatedDate]
                           ,[CreatedBy]
@@ -40,7 +40,7 @@ namespace CentristTraveler.Repositories.Implementations
 
         public List<Tag> GetTagsByPostId(int postId)
         {
-            string sql = @"SELECT Tag.[Id]
+            string sql = @"SELECT Tag.[Id] AS TagId
                           ,Tag.[Name]
                           ,Tag.[CreatedDate]
                           ,Tag.[CreatedBy]
@@ -48,7 +48,7 @@ namespace CentristTraveler.Repositories.Implementations
                           ,Tag.[UpdatedBy] 
                             FROM Master_Tag AS Tag
                             JOIN Mapping_Post_Tag As PostTag On Tag.Id = PostTag.TagId
-                            WHERE PostTag.PostId = @PostId" ;
+                            WHERE PostTag.PostId = @PostId";
             List<Tag> tags = new List<Tag>();
 
             
@@ -67,9 +67,33 @@ namespace CentristTraveler.Repositories.Implementations
             return tags;
         }
 
+        public List<Tag> GetPopularTags()
+        {
+            string sql = @"SELECT TOP 5 Tag.[Id] AS TagId
+                          ,Tag.[Name]
+                          ,COUNT(Tag.[Id])
+                            FROM Master_Tag AS Tag
+                            JOIN Mapping_Post_Tag As PostTag On Tag.Id = PostTag.TagId
+                            GROUP BY Tag.[Id], Tag.[Name]
+                            ORDER BY Count(Tag.[Id])";
+            List<Tag> tags = new List<Tag>();
+
+
+            try
+            {
+                tags = _connection.Query<Tag>(sql, null, _transaction).ToList();
+            }
+            catch (Exception ex)
+            {
+                tags = new List<Tag>();
+                // TODO: Add Error Log
+            }
+
+            return tags;
+        }
         public Tag GetTagById(int id)
         {
-            string sql = @"SELECT [Id]
+            string sql = @"SELECT [Id] AS TagId
                           ,[Name]
                           ,[CreatedDate]
                           ,[CreatedBy]
@@ -136,7 +160,7 @@ namespace CentristTraveler.Repositories.Implementations
             int affectedRows = _connection.Execute(sql,
                 new
                 {
-                    @Id = tag.Id,
+                    @Id = tag.TagId,
                     @Name = tag.Name,
                     @UpdatedBy = tag.UpdatedBy,
                     @UpdatedDate = tag.UpdatedDate
@@ -172,7 +196,7 @@ namespace CentristTraveler.Repositories.Implementations
 
         public Tag GetTagByName(string name)
         {
-            string sql = @"SELECT [Id]
+            string sql = @"SELECT [Id] AS TagId
                           ,[Name]
                           ,[CreatedDate]
                           ,[CreatedBy]

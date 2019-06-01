@@ -17,7 +17,7 @@ namespace CentristTraveler.Repositories.Implementations
     {
         public List<Category> GetAll()
         {
-            string sql = @"SELECT [Id]
+            string sql = @"SELECT [Id] AS CategoryId
                           ,[Name]
                           ,[CreatedBy]
                           ,[CreatedDate]

@@ -41,7 +41,7 @@ namespace CentristTraveler.Repositories.Implementations
                         new
                         {
                             @PostId = postId,
-                            @TagId = tag.Id,
+                            @TagId = tag.TagId,
                             @CreatedBy = post.CreatedBy,
                             @CreatedDate = DateTime.Now,
                             @UpdatedBy = post.UpdatedBy,
@@ -82,7 +82,7 @@ namespace CentristTraveler.Repositories.Implementations
                         new
                         {
                             @PostId = postId,
-                            @TagId = tag.Id
+                            @TagId = tag.TagId
                         },
                         _transaction);
                     if (affectedRows > 0)

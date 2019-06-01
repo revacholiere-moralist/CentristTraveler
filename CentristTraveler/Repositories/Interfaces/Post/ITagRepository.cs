@@ -10,6 +10,7 @@ namespace CentristTraveler.Repositories.Interfaces
     {
         List<Tag> GetAllTags();
         List<Tag> GetTagsByPostId(int postId);
+        List<Tag> GetPopularTags();
         Tag GetTagById(int id);
         Tag GetTagByName(string name);
         int Create(Tag tag);

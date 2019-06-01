@@ -7,6 +7,7 @@ namespace CentristTraveler.Models
 {
     public class Tag : BaseModel
     {
+        public int TagId { get; set; }
         public string Name { get; set; }
     }
 }

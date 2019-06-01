@@ -7,6 +7,7 @@ namespace CentristTraveler.Models
 {
     public class Post : BaseModel
     {
+        public int PostId { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
         public string ThumbnailPath { get; set; }
@@ -14,5 +15,6 @@ namespace CentristTraveler.Models
         public string BannerText { get; set; }
         public string PreviewText { get; set; }
         public int CategoryId { get; set; }
+        public List<Tag> Tags { get; set; }
     }
 }

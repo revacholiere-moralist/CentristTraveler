@@ -83,7 +83,7 @@ namespace CentristTraveler.Repositories.Implementations
             int affectedRows = _connection.Execute(sql,
                 new
                 {
-                    @Id = role.Id,
+                    @Id = role.RoleId,
                     @Name = role.Name,
                     @UpdatedBy = role.UpdatedBy,
                     @UpdatedDate = role.UpdatedDate

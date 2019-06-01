@@ -1,4 +1,5 @@
-﻿using CentristTraveler.Models;
+﻿using CentristTraveler.Dto;
+using CentristTraveler.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,8 @@ namespace CentristTraveler.Repositories.Interfaces
 {
     public interface IPostRepository : IBaseRepository
     {
-        List<Post> GetAllPosts();
-        List<Post> GetPostsByCreationDate(DateTime beginDate, DateTime endDate);
-        List<Post> GetPostsByCollaborators(List<string> username);
+        List<Post> GetLatestPosts();
+        List<Post> SearchPosts(PostSearchParamDto searchParam);
         Post GetPostById(int id);
         int Create(Post post);
         bool Update(Post post);

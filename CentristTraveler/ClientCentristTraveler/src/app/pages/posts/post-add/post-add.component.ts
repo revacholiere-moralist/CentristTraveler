@@ -31,7 +31,7 @@ export class PostAddComponent implements OnInit {
       ['image']
     ],
     imageUpload: {
-      url: '/api/Upload',  adsadasd // server url. If the url is empty then the base64 returns
+      url: '/api/Upload',// server url. If the url is empty then the base64 returns
       method: 'POST', // change query method, default 'POST'
       name: 'image', // custom form name
       withCredentials: false, // withCredentials

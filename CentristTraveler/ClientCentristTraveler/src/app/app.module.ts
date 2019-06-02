@@ -63,6 +63,7 @@ import { RegisterComponent } from './pages/auth/register/register.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { LogoutComponent } from './pages/auth/logout/logout.component';
 import { HeaderComponent } from './pages/shared/header/header.component';
+import { FooterComponent } from './footer/footer.component';
 
 
 @NgModule({
@@ -77,7 +78,8 @@ import { HeaderComponent } from './pages/shared/header/header.component';
     RegisterComponent,
     LoginComponent,
     LogoutComponent,
-    HeaderComponent
+    HeaderComponent,
+    FooterComponent
   ],
   imports: [
     

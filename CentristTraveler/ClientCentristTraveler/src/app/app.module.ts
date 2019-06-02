@@ -63,7 +63,7 @@ import { RegisterComponent } from './pages/auth/register/register.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { LogoutComponent } from './pages/auth/logout/logout.component';
 import { HeaderComponent } from './pages/shared/header/header.component';
-import { FooterComponent } from './footer/footer.component';
+import { FooterComponent } from './pages/shared/footer/footer.component';
 
 
 @NgModule({
@@ -180,7 +180,7 @@ import { FooterComponent } from './footer/footer.component';
   ],
   providers: [Title,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }],
-  bootstrap: [AppComponent, HeaderComponent]
+  bootstrap: [AppComponent, HeaderComponent, FooterComponent]
 })
 export class AppModule { }
 platformBrowserDynamic().bootstrapModule(AppModule);

@@ -9,7 +9,8 @@ body {
   color: #000;
   font-family: "Quicksand", sans-serif;
   font-weight: 400;
-  line-height: 1.625
+  line-height: 1.625;
+
 }
 
 ul {
@@ -296,7 +297,7 @@ a {
   top: -70px;
   left: 0;
   right: 0;
-  background: #dddd;
+  background: #ddd;
   z-index: 99;
   transform: translateY(70px);
   transition: transform 500ms ease, background 500ms ease;
@@ -410,10 +411,6 @@ a {
     margin-bottom: 23px
   }
 
-  .header_area .navbar {
-    background: #000
-  }
-
   .navbar-toggler[aria-expanded="false"] span:nth-child(2) {
     opacity: 1
   }
@@ -438,7 +435,7 @@ a {
     display: block;
     width: 25px;
     height: 3px;
-    background: #fff;
+    background: #222;
     margin: auto;
     margin-bottom: 4px;
     transition: all 400ms linear;
@@ -776,6 +773,29 @@ a {
   }
 }
 
+@media (min-width: 770px) {
+  .hero-banner {
+    height: 400px
+  }
+}
+
+@media (min-width: 576px) {
+  .hero-banner {
+    height: 300px
+  }
+}
+
+@media (min-width: 394px) {
+  .hero-banner {
+    height: 250px
+  }
+}
+
+@media (max-width: 393px) {
+  .hero-banner {
+    height: 205px
+  }
+}
 .hero-banner--sm {
   height: 300px
 }
@@ -2676,8 +2696,4 @@ a {
 .banner {
   padding-left: 0px;
   padding-right: 0px;
-}
-
-.post {
-  padding:0px;
 }

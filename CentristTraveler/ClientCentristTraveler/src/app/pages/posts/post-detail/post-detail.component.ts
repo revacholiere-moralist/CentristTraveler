@@ -15,7 +15,7 @@ export class PostDetailComponent implements OnInit {
   jwtHelperService = new JwtHelperService();
   isWriter: boolean = false;
   isAdmin: boolean = false;
-  post: Post = { id: this.route.snapshot.params['id'], title: '', body: '', thumbnail_path: null, tags: null, preview_text: null, banner_path: '', banner_text: '', category_id: null };
+  post: Post = { id: this.route.snapshot.params['id'], title: '', body: '', thumbnail_path: null, tags: null, preview_text: null, banner_path: '', banner_text: '', category_id: null, author_display_name:'', author_username: '' };
   isLoadingResults = true;
   style: any = {};
   constructor(private postService: PostService,
@@ -48,14 +48,19 @@ export class PostDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getPostDetail(this.route.snapshot.params['id']);
+    this.route.params.subscribe(
+      params => {
+        const id = +params['id'];
+        this.getPostDetail(id);
+      }
+    );
+    
     
   }
 
   getPostDetail(id) {
     this.postService.getDetail(id)
       .subscribe(data => {
-        debugger;
         this.post = data;
         this.style = {'background-image': 'url("' + this.post.banner_path + '")'};
         this.titleService.setTitle(this.post.title);

@@ -23,7 +23,14 @@ namespace CentristTraveler.Dto
         public string PreviewText { get; set; }
         [JsonProperty(PropertyName = "category_id")]
         public int CategoryId { get; set; }
+        
         [JsonProperty(PropertyName = "tags")]
         public List<Tag> Tags { get; set; }
+
+        [JsonProperty(PropertyName = "author_display_name")]
+        public string AuthorDisplayName { get; set; }
+
+        [JsonProperty(PropertyName = "author_username")]
+        public string AuthorUsername { get; set; }
     }
 }

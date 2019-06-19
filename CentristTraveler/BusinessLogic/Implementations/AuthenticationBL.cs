@@ -65,6 +65,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                     Username = userDto.Username,
                     Password = BCryptHelper.HashPassword(userDto.Password, BCryptHelper.GenerateSalt(12)),
                     Email = userDto.Email,
+                    DisplayName = userDto.DisplayName,
                     CreatedBy = "admin",
                     CreatedDate = DateTime.Now,
                     UpdatedBy = "admin",
@@ -73,10 +74,28 @@ namespace CentristTraveler.BusinessLogic.Implementations
                 
                 // hardcoded for now, give writer role to user
                 int newUserId = _authenticationUoW.UserRepository.Create(user);
-                List<Role> roles = userDto.Roles;
+                List<Role> roles = new List<Role>();
+                foreach (RoleDto roleDto in userDto.Roles)
+                {
+                    Role role = new Role
+                    {
+                        RoleId = roleDto.RoleId,
+                        Name = roleDto.Name
+                    };
+                    roles.Add(role);
+                }
+                
 
-                _authenticationUoW.UserRoleRepository.InsertUserRoles(newUserId, roles, user);
-                _authenticationUoW.Commit();
+                var isSuccess = _authenticationUoW.UserRoleRepository.InsertUserRoles(newUserId, roles, user);
+                if (isSuccess)
+                {
+                    _authenticationUoW.Commit();
+                }
+                else
+                {
+                    _authenticationUoW.Dispose();
+                    return false;
+                }
                 return true;
             }
             catch (Exception ex)

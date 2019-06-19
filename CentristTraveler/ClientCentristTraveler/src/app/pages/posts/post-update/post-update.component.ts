@@ -10,6 +10,11 @@ import { Tag } from '../../../models/tag';
 import { Post } from '../../../models/post';
 import { HttpRequest, HttpEventType, HttpClient } from '@angular/common/http';
 import { Category } from '../../../models/category';
+import Quill from 'quill'
+import { ImageUpload } from 'quill-image-upload';
+
+import { QuillEditorComponent } from 'ngx-quill'
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-post-update',
@@ -17,6 +22,36 @@ import { Category } from '../../../models/category';
   styleUrls: ['./post-update.component.css']
 })
 export class PostUpdateComponent implements OnInit {
+
+  config = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'],
+      ['blockquote', 'code-block'],
+      ['image']
+    ],
+    imageUpload: {
+      url: '/api/Upload',// server url. If the url is empty then the base64 returns
+      method: 'POST', // change query method, default 'POST'
+      name: 'image', // custom form name
+      withCredentials: false, // withCredentials
+      // personalize successful callback and call next function to insert new url to the editor
+      callbackOK: (serverResponse, next) => {
+        debugger;
+        var result = serverResponse.toString();
+        next(result.substring(result.indexOf(".") + 1));
+      },
+      // personalize failed callback
+      callbackKO: serverError => {
+        alert(serverError);
+      },
+      // optional
+      // add callback when a image have been chosen
+      checkBeforeSend: (file, next) => {
+        console.log(file);
+        next(file); // go back to component and send to the server
+      }
+    }
+  }
 
   postForm: FormGroup;
   id: number = null;
@@ -43,14 +78,17 @@ export class PostUpdateComponent implements OnInit {
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   tags: Tag[] = [];
 
+  jwtHelperService = new JwtHelperService();
+
   constructor(private router: Router,
     private route: ActivatedRoute,
     private postService: PostService,
     private formBuilder: FormBuilder,
     private titleService: Title,
     private http: HttpClient,) { }
-
+ 
   ngOnInit() {
+    Quill.register('modules/imageUpload', ImageUpload);
     //set title
     this.titleService.setTitle('Edit Post');
     this.getPostDetail(this.route.snapshot.params['id']);
@@ -64,8 +102,8 @@ export class PostUpdateComponent implements OnInit {
       'id': [null, Validators.required],
       'title': [null, Validators.required],
       'body': [null, Validators.required],
-      'thumbnail_path': [null, Validators.required],
-      'banner_path': [null, Validators.required],
+      'thumbnail_path': [{ value: null, disabled: true }, Validators.required],
+      'banner_path': [{ value: null, disabled: true }, Validators.required],
       'banner_text': [null, Validators.required],
       'preview_text': [null, Validators.required],
       'category_id': [null, Validators.required]
@@ -93,15 +131,20 @@ export class PostUpdateComponent implements OnInit {
 
   onFormSubmit(form: NgForm) {
     debugger;
+    let value = this.postForm.getRawValue();
     this.isLoadingResults = true;
     this.post.id = form['id'];
     this.post.title = form['title'];
     this.post.body = form['body'];
-    this.post.thumbnail_path = form['thumbnail_path'];
-    this.post.banner_path = form['banner_path'];
+    this.post.thumbnail_path = value['thumbnail_path'];
+    this.post.banner_path = value['banner_path'];
     this.post.banner_text = form['banner_text'];
     this.post.preview_text = form['preview_text'];
     this.post.category_id = form['category_id'];
+
+    let token = this.jwtHelperService.decodeToken(localStorage.getItem('token'));
+    this.post.author_username = (token['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']);
+
     this.post.tags = this.tags;
     this.postService.updatePost(this.post)
       .subscribe(res => {

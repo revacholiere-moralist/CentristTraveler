@@ -32,6 +32,7 @@ export class AllPostsComponent implements OnInit {
     if (this.route.snapshot.params['tagName'] != null) {
       this.postSearchParam.tag = this.route.snapshot.params['tagName'];
     }
+
     //get all posts
     this.postService.getPosts(this.postSearchParam)
       .subscribe(res => {

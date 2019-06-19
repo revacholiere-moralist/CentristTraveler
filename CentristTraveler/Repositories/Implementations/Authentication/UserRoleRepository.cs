@@ -65,7 +65,7 @@ namespace CentristTraveler.Repositories.Implementations
                     }
                 }
 
-                catch (Exception)
+                catch (Exception ex)
                 {
                     isSuccess = false;
                 }

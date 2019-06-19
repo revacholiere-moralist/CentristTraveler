@@ -38,14 +38,15 @@ namespace CentristTraveler.Repositories.Implementations
 
         public User GetUserById(int id)
         {
-            string sql = @"SELECT [Id]
+            string sql = @"SELECT [Id] AS UserId
                           ,[Username]
                           ,[Email]
+                          ,[DisplayName]
                           ,[CreatedDate]
                           ,[CreatedBy]
                           ,[UpdatedDate]
                           ,[UpdatedBy] 
-                            FROM User
+                            FROM [dbo].[User]
                             WHERE Id = @Id";
             User user = new User();
 
@@ -69,17 +70,17 @@ namespace CentristTraveler.Repositories.Implementations
 
         public User GetUserByUsername(string username)
         {
-            string sql = @"SELECT [Id]
+            string sql = @"SELECT [Id] AS UserId
                           ,[Username]
                           ,[Email]
+                          ,[DisplayName]
                           ,[CreatedDate]
                           ,[CreatedBy]
                           ,[UpdatedDate]
                           ,[UpdatedBy] 
-                            FROM User
-                            WHERE Id = @Username";
+                            FROM [dbo].[User]
+                            WHERE Username = @username";
             User user = new User();
-
             try
             {
                 user = _connection.Query<User>(sql,
@@ -184,6 +185,7 @@ namespace CentristTraveler.Repositories.Implementations
                            ([Username]
                            ,[Password]
                            ,[Email]
+                           ,[DisplayName]
                            ,[CreatedBy]
                            ,[CreatedDate]
                            ,[UpdatedBy]
@@ -192,6 +194,7 @@ namespace CentristTraveler.Repositories.Implementations
                            (@Username
                            ,@Password
                            ,@Email
+                           ,@DisplayName
                            ,@CreatedBy
                            ,@CreatedDate
                            ,@UpdatedBy
@@ -204,6 +207,7 @@ namespace CentristTraveler.Repositories.Implementations
                     @Username = user.Username,
                     @Password = user.Password,
                     @Email = user.Email,
+                    @DisplayName = user.DisplayName,
                     @CreatedBy = user.CreatedBy,
                     @CreatedDate = user.CreatedDate,
                     @UpdatedBy = user.UpdatedBy,
@@ -216,6 +220,7 @@ namespace CentristTraveler.Repositories.Implementations
         {
             string sql = @"UPDATE [dbo].[User]
                            SET [Password] = @Password
+                              ,[DisplayName] = @DisplayName
                               ,[Email] = @Email
                               ,[UpdatedBy] = @UpdatedBy
                               ,[UpdatedDate] = @UpdatedDate
@@ -227,6 +232,7 @@ namespace CentristTraveler.Repositories.Implementations
                 {
                     @Password = user.Password,
                     @Email = user.Email,
+                    @DisplayName = user.DisplayName,
                     @UpdatedBy = user.UpdatedBy,
                     @UpdatedDate = user.UpdatedDate
                 },

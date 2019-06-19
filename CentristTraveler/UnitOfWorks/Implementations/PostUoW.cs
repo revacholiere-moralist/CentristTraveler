@@ -19,6 +19,7 @@ namespace CentristTraveler.UnitOfWorks.Implementations
         private ITagRepository _tagRepository;
         private IPostTagsRepository _postTagsRepository;
         private ICategoryRepository _categoryRepository;
+        private IUserRepository _userRepository;
         #endregion
 
         #region Constructor
@@ -26,14 +27,15 @@ namespace CentristTraveler.UnitOfWorks.Implementations
                         IPostRepository postRepository,
                         ITagRepository tagRepository,
                         IPostTagsRepository postTagsRepository,
-                        ICategoryRepository categoryRepository) : base(connectionString)
+                        ICategoryRepository categoryRepository,
+                        IUserRepository userRepository) : base(connectionString)
         {
 
             _postRepository = postRepository;
             _tagRepository = tagRepository;
             _postTagsRepository = postTagsRepository;
             _categoryRepository = categoryRepository;
-
+            _userRepository = userRepository;
         }
         #endregion
 
@@ -69,6 +71,15 @@ namespace CentristTraveler.UnitOfWorks.Implementations
                 return _categoryRepository;
             }
         }
+        public IUserRepository UserRepository
+        {
+            get
+            {
+                _userRepository.CreateTransaction(_transaction);
+                return _userRepository;
+            }
+        }
+
         public void Begin()
         {
             _connection.Open();

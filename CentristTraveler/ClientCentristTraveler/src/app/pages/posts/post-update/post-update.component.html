@@ -23,9 +23,15 @@
         <span class="focus-input100"></span>
       </div>
 
+      <div class="wrap-input100 validate-input body-text-wrapper" data-validate="Message is required">
+        <span class="label-input100">Body</span>
+        <quill-editor [modules]="config" formControlName="body" class="input100 body-text" data="<p>Body</p>"></quill-editor>
+        <span class="focus-input100"></span>
+      </div>
+
       <div class="wrap-input100 validate-input" data-validate="Message is required">
-        <span class="label-input100">Message</span>
-        <div formControlName="body" class="input100" data="<p>Body</p>"></div>
+        <span class="label-input100">Preview Text</span>
+        <input formControlName="preview_text" class="input100" type="text" data="<p>PreviewText</p>">
         <span class="focus-input100"></span>
       </div>
 
@@ -41,7 +47,7 @@
           {{message}}
         </span>
 
-        <input formControlName="thumbnail_path" class="input100" type="text" name="thumbnail-path" disabled [(ngModel)]='thumbnail_path' placeholder="Thumbnail Path">
+        <input formControlName="thumbnail_path" class="input100" type="text" name="thumbnail-path" placeholder="Thumbnail Path">
         <span class="focus-input100"></span>
 
       </div>
@@ -58,10 +64,11 @@
           {{messageBanner}}
         </span>
 
-        <input formControlName="banner_path" class="input100" type="text" name="banner-path" disabled placeholder="Banner Path">
+        <input formControlName="banner_path" class="input100" type="text" name="banner-path" placeholder="Banner Path">
         <span class="focus-input100"></span>
 
       </div>
+
 
       <div class="wrap-input100 validate-input" data-validate="Message is required">
         <span class="label-input100">Banner Text</span>
@@ -101,41 +108,3 @@
 
 
 
-
-<!--<div class="example-container mat-elevation-z8">
-  <div class="example-loading-shade"
-       *ngIf="isLoadingResults">
-    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
-  </div>
-
-  <mat-card class="example-card">
-    <form [formGroup]="postForm" (ngSubmit)="onFormSubmit(postForm.value)">
-      <input hidden formControlName="id"
-             >
-      <mat-form-field class="example-full-width">
-        <input matInput placeholder="Title" formControlName="title"
-               [errorStateMatcher]="matcher">
-        <mat-error>
-          <span *ngIf="!postForm.get('title').valid && postForm.get('title').touched">Please enter Title</span>
-        </mat-error>
-      </mat-form-field>
-      <mat-form-field class="example-full-width">
-        <input matInput placeholder="Body" formControlName="body"
-               [errorStateMatcher]="matcher">
-        <mat-error>
-          <span *ngIf="!postForm.get('body').valid && postForm.get('body').touched">Please enter Body</span>
-        </mat-error>
-      </mat-form-field>
-      <mat-form-field class="example-full-width">
-        <input matInput placeholder="Thumbnail Path" formControlName="thumbnail_path"
-               [errorStateMatcher]="matcher">
-        <mat-error>
-          <span *ngIf="!postForm.get('thumbnail_path').valid && postForm.get('thumbnail_path').touched">Please enter Thumbnail Path</span>
-        </mat-error>
-      </mat-form-field>
-      <div class="button-row">
-        <button type="submit" [disabled]="!postForm.valid" mat-flat-button color="primary"><mat-icon>save</mat-icon></button>
-      </div>
-    </form>
-  </mat-card>
-</div>-->

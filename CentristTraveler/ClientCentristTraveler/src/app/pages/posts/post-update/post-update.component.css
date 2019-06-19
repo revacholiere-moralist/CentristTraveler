@@ -430,3 +430,15 @@ textarea.input100 {
     transform: scale(1.1);
   }
 }
+
+.fixed option {
+  background: #38444d;
+}
+
+.body-text {
+  height: 300px;
+}
+
+.body-text-wrapper {
+  height: 430px;
+}

@@ -769,31 +769,44 @@ a {
 
 @media (min-width: 1000px) {
   .hero-banner {
-    height: 550px
+    height: 600px
   }
 }
 
-@media (min-width: 770px) {
+@media (max-width: 999px) {
   .hero-banner {
     height: 400px
   }
 }
 
-@media (min-width: 576px) {
+@media (max-width: 769px) {
   .hero-banner {
     height: 300px
   }
 }
 
-@media (min-width: 394px) {
+@media (max-width: 510px) {
+  .hero-banner {
+    height: 275px
+  }
+}
+
+@media (max-width: 450px) {
   .hero-banner {
     height: 250px
   }
 }
 
+
 @media (max-width: 393px) {
   .hero-banner {
     height: 205px
+  }
+}
+
+@media (max-width: 321px) {
+  .hero-banner {
+    height: 185px
   }
 }
 .hero-banner--sm {

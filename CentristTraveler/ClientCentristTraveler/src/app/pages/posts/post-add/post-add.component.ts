@@ -115,8 +115,10 @@ export class PostAddComponent implements OnInit {
     this.post.preview_text =form['preview_text'];
     this.post.banner_text = form['banner_text'];
     this.post.category_id = form['category_id'];
+
     let token = this.jwtHelperService.decodeToken(localStorage.getItem('token'));
-    
+    this.post.author_username = (token['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']);
+
     this.post.tags = this.tags;
     this.postService.addPost(this.post)
       .subscribe(res => {

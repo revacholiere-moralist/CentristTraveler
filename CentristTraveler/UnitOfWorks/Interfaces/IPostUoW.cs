@@ -13,6 +13,7 @@ namespace CentristTraveler.UnitOfWorks.Interfaces
         ITagRepository TagRepository { get; }
         IPostTagsRepository PostTagsRepository { get; }
         ICategoryRepository CategoryRepository { get; }
+        IUserRepository UserRepository { get; }
         void Begin();
     }
 }

@@ -19,6 +19,8 @@ export class SidebarComponent implements OnInit {
     private postService: PostService) { }
 
   ngOnInit() {
+   
+    
     this.searchTagForm = this.formBuilder.group({
       'tag_name': [null],
     });

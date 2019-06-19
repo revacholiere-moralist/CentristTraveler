@@ -16,7 +16,7 @@ namespace CentristTraveler.Dto
         [JsonProperty(PropertyName = "email")]
         public string Email { get; set; }
         [JsonProperty(PropertyName = "roles")]
-        public List<Role> Roles { get; set; }
+        public List<RoleDto> Roles { get; set; }
         [JsonProperty(PropertyName = "display_name")]
         public string DisplayName { get; set; }
     }

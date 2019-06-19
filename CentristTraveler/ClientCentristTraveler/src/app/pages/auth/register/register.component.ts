@@ -39,12 +39,13 @@ export class RegisterComponent implements OnInit {
     this.registerForm = this.formBuilder.group({
       'username': [null, Validators.required],
       'password': [null, Validators.required],
-      'email': [null, Validators.required]
+      'email': [null, Validators.required],
+      'display_name': [null, Validators.required]
     });
 
     // add role (hardcoded for now)
     this.roles.push({
-      id: 2,
+      role_id: 2,
       name: 'writer'
     });
   }
@@ -56,6 +57,7 @@ export class RegisterComponent implements OnInit {
     this.user.password = form['password'];
     this.user.email = form['email'];
     this.user.roles = this.roles;
+    this.user.display_name = form['display_name'];
     this.authService.register(this.user)
       .subscribe(res => {
         this.isLoadingResults = false;

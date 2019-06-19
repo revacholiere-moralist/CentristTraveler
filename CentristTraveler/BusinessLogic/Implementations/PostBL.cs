@@ -27,6 +27,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                 foreach (Post post in posts)
                 {
                     List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(post.PostId);
+                    User user = _postUoW.UserRepository.GetUserById(post.AuthorId);
                     PostDto postDto = new PostDto
                     {
                         Id = post.PostId,
@@ -36,6 +37,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                         ThumbnailPath = post.ThumbnailPath,
                         BannerPath = post.BannerPath,
                         PreviewText = post.PreviewText,
+                        AuthorDisplayName = user.DisplayName,
                         CategoryId = post.CategoryId,
                         CreatedBy = post.CreatedBy,
                         CreatedDate = post.CreatedDate,
@@ -64,6 +66,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                 foreach (Post post in posts)
                 {
                     List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(post.PostId);
+                    User user = _postUoW.UserRepository.GetUserById(post.AuthorId);
                     PostDto postDto = new PostDto
                     {
                         Id = post.PostId,
@@ -73,6 +76,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                         ThumbnailPath = post.ThumbnailPath,
                         BannerPath = post.BannerPath,
                         PreviewText = post.PreviewText,
+                        AuthorDisplayName = user.DisplayName,
                         CategoryId = post.CategoryId,
                         CreatedBy = post.CreatedBy,
                         CreatedDate = post.CreatedDate,
@@ -95,6 +99,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
             {
                 Post post = _postUoW.PostRepository.GetPostById(id);
                 List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(post.PostId);
+                User user = _postUoW.UserRepository.GetUserById(post.AuthorId);
                 PostDto postDto = new PostDto
                 {
                     Id = post.PostId,
@@ -105,6 +110,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                     BannerPath = post.BannerPath,
                     BannerText = post.BannerText,
                     PreviewText = post.PreviewText,
+                    AuthorDisplayName = user.DisplayName,
                     CategoryId = post.CategoryId,
                     CreatedBy = post.CreatedBy,
                     CreatedDate = post.CreatedDate,
@@ -130,6 +136,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
             _postUoW.Begin();
             try
             {
+                User user = _postUoW.UserRepository.GetUserByUsername(postDto.AuthorUsername);
                 Post post = new Post
                 {
                     Title = postDto.Title,
@@ -139,9 +146,10 @@ namespace CentristTraveler.BusinessLogic.Implementations
                     CategoryId = postDto.CategoryId,
                     BannerPath = postDto.BannerPath,
                     BannerText = postDto.BannerText,
-                    CreatedBy = "admin",
+                    AuthorId = user.UserId,
+                    CreatedBy = postDto.AuthorUsername,
                     CreatedDate = DateTime.Now,
-                    UpdatedBy = "admin",
+                    UpdatedBy = postDto.AuthorUsername,
                     UpdatedDate = DateTime.Now
                 };
 
@@ -202,14 +210,18 @@ namespace CentristTraveler.BusinessLogic.Implementations
 
                 oldPost.Title = postDto.Title;
                 oldPost.Body = postDto.Body;
-                oldPost.ThumbnailPath = postDto.ThumbnailPath;
-                oldPost.BannerPath = postDto.BannerPath;
+                if (postDto.ThumbnailPath != null)
+                {
+                    oldPost.ThumbnailPath = postDto.ThumbnailPath;
+                }
+                if (postDto.BannerPath != null)
+                {
+                    oldPost.BannerPath = postDto.BannerPath;
+                }
                 oldPost.BannerText = postDto.BannerText;
                 oldPost.CategoryId = postDto.CategoryId;
                 oldPost.PreviewText = postDto.PreviewText;
-                oldPost.CreatedBy = "admin";
-                oldPost.CreatedDate = DateTime.Now;
-                oldPost.UpdatedBy = "admin";
+                oldPost.UpdatedBy = postDto.AuthorUsername;
                 oldPost.UpdatedDate = DateTime.Now;
 
                 isSuccess = _postUoW.PostRepository.Update(oldPost);

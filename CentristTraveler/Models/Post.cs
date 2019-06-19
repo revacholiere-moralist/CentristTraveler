@@ -15,6 +15,7 @@ namespace CentristTraveler.Models
         public string BannerText { get; set; }
         public string PreviewText { get; set; }
         public int CategoryId { get; set; }
-        public List<Tag> Tags { get; set; }
+        public int AuthorId { get; set; }
+        //public List<Tag> Tags { get; set; }
     }
 }

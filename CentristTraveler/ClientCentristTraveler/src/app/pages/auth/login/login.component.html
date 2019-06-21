@@ -1,5 +1,6 @@
 <div class="container-contact100">
   <div class="wrap-contact100">
+    <div *ngIf="isLoginIncorrect" class="alert-message">Username or Password is incorrect</div>
     <form [formGroup]="loginForm" (ngSubmit)="onFormSubmit(loginForm.value)" class="contact100-form validate-form">
       <span class="contact100-form-title">
         Login

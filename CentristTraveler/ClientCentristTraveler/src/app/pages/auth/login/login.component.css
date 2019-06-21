@@ -2,7 +2,10 @@
 
 /*//////////////////////////////////////////////////////////////////
 [ Contact ]*/
-
+.alert-message{
+  color: #ff9907;
+  font-weight: 500;
+}
 .container-contact100 {
   width: 100%;
   min-height: 100vh;

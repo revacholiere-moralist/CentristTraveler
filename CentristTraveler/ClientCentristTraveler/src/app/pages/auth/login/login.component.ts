@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   username: string = '';
   password: string = '';
   isLoadingResults = false;
-
+  isLoginIncorrect = false;
   user: User = new User();
 
   constructor(private router: Router,
@@ -47,10 +47,15 @@ export class LoginComponent implements OnInit {
     
     this.authService.authenticate(this.user)
       .subscribe(res => {
-        console.log(res);
-        localStorage.setItem('token', res);
-        this.isLoadingResults = false;
-        this.router.navigate(['/post/posts']);
+        if (res != null) {
+          this.isLoginIncorrect = false;
+          localStorage.setItem('token', res);
+          this.isLoadingResults = false;
+          this.router.navigate(['/post/posts']);
+        }
+        else {
+          this.isLoginIncorrect = true;
+        }
       }, (err) => {
         console.log(err);
         this.isLoadingResults = false;

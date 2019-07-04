@@ -26,7 +26,10 @@ namespace CentristTraveler.Dto
         
         [JsonProperty(PropertyName = "tags")]
         public List<Tag> Tags { get; set; }
-
+        [JsonProperty(PropertyName = "views")]
+        public int Views { get; set; }
+        [JsonProperty(PropertyName = "slug")]
+        public string Slug { get; set; }
         [JsonProperty(PropertyName = "author_display_name")]
         public string AuthorDisplayName { get; set; }
 

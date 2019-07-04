@@ -50,7 +50,7 @@
   <h4 class="single-sidebar-widget__title">Latest Posts</h4>
   <ul *ngFor="let post of posts" class="list">
     <li>
-      <a [routerLink]="['/post/detail', post.id]">{{post.title}}</a>
+      <a [routerLink]="['/post/detail', post.id, post.slug]">{{post.title}}</a>
     </li>
   </ul>
 </div>

@@ -32,7 +32,7 @@
             </h3>
             <pre class="tag-list-inline">Tag: <a *ngFor="let tag of row.tags" href="/post/posts/tag/{{tag.name}}">{{tag.name}} </a></pre>
             <div [innerHTML]="row.preview_text"></div>
-            <a class="button" [routerLink]="['/post/detail', row.id]">Read More <i class="ti-arrow-right"></i></a>
+            <a class="button" [routerLink]="['/post/detail', row.id, row.slug]">Read More <i class="ti-arrow-right"></i></a>
           </div>
         </div>
       </div>

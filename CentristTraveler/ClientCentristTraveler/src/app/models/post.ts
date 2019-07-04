@@ -10,6 +10,8 @@ export class Post {
   banner_text: string;
   category_id: number;
   tags: Tag[];
+  views: number;
+  slug: string;
   author_display_name: string;
   author_username: string;
 }

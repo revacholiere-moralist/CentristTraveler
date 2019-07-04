@@ -5,6 +5,7 @@ using CentristTraveler.UnitOfWorks.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -39,6 +40,8 @@ namespace CentristTraveler.BusinessLogic.Implementations
                         PreviewText = post.PreviewText,
                         AuthorDisplayName = user.DisplayName,
                         CategoryId = post.CategoryId,
+                        Views = post.Views,
+                        Slug = post.Slug,
                         CreatedBy = post.CreatedBy,
                         CreatedDate = post.CreatedDate,
                         UpdatedBy = post.UpdatedBy,
@@ -78,6 +81,8 @@ namespace CentristTraveler.BusinessLogic.Implementations
                         PreviewText = post.PreviewText,
                         AuthorDisplayName = user.DisplayName,
                         CategoryId = post.CategoryId,
+                        Views = post.Views,
+                        Slug = post.Slug,
                         CreatedBy = post.CreatedBy,
                         CreatedDate = post.CreatedDate,
                         UpdatedBy = post.UpdatedBy,
@@ -112,6 +117,8 @@ namespace CentristTraveler.BusinessLogic.Implementations
                     PreviewText = post.PreviewText,
                     AuthorDisplayName = user.DisplayName,
                     CategoryId = post.CategoryId,
+                    Views = post.Views,
+                    Slug = post.Slug,
                     CreatedBy = post.CreatedBy,
                     CreatedDate = post.CreatedDate,
                     UpdatedBy = post.UpdatedBy,
@@ -147,6 +154,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                     BannerPath = postDto.BannerPath,
                     BannerText = postDto.BannerText,
                     AuthorId = user.UserId,
+                    Slug = SlugifyString(postDto.Title.ToLower()),
                     CreatedBy = postDto.AuthorUsername,
                     CreatedDate = DateTime.Now,
                     UpdatedBy = postDto.AuthorUsername,
@@ -218,6 +226,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                 {
                     oldPost.BannerPath = postDto.BannerPath;
                 }
+                oldPost.Slug = SlugifyString(postDto.Title.ToLower());
                 oldPost.BannerText = postDto.BannerText;
                 oldPost.CategoryId = postDto.CategoryId;
                 oldPost.PreviewText = postDto.PreviewText;
@@ -352,6 +361,17 @@ namespace CentristTraveler.BusinessLogic.Implementations
             {
                 return new List<TagDto>();
             }
+        }
+
+        private string SlugifyString(string input)
+        {
+            input = Regex.Replace(input, @"[^a-z0-9\s-]", "");
+            // convert multiple spaces into one space   
+            input = Regex.Replace(input, @"\s+", " ").Trim();
+            // cut and trim 
+            input = input.Substring(0, input.Length <= 45 ? input.Length : 45).Trim();
+            input = Regex.Replace(input, @"\s", "-"); // hyphens  
+            return input;
         }
     }
 }

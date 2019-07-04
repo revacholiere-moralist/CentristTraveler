@@ -28,6 +28,8 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[BannerText]
                           ,[AuthorId]
                           ,[CategoryId]
+                          ,[Views]
+                          ,[Slug]
                           ,[CreatedDate]
                           ,[CreatedBy]
                           ,[UpdatedDate]
@@ -58,6 +60,8 @@ namespace CentristTraveler.Repositories.Implementations
                           ,Post.[BannerPath]
                           ,Post.[BannerText]
                           ,Post.[CategoryId]
+                          ,[Views]
+                          ,[Slug]
                           ,Post.[CreatedDate]
                           ,Post.[CreatedBy]
                           ,Post.[UpdatedDate]
@@ -106,6 +110,8 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[BannerPath]
                           ,[BannerText]
                           ,[CategoryId]
+                          ,[Views]
+                          ,[Slug]
                           ,[CreatedDate]
                           ,[CreatedBy]
                           ,[UpdatedDate]
@@ -143,6 +149,7 @@ namespace CentristTraveler.Repositories.Implementations
                        ,[BannerText]
                        ,[AuthorId]
                        ,[CategoryId]
+                       ,[Slug]
                        ,[CreatedDate]
                        ,[CreatedBy]
                        ,[UpdatedDate]
@@ -156,6 +163,7 @@ namespace CentristTraveler.Repositories.Implementations
                        ,@BannerText
                        ,@AuthorId
                        ,@CategoryId
+                       ,@Slug
                        ,@CreatedDate
                        ,@CreatedBy
                        ,@UpdatedDate
@@ -174,6 +182,7 @@ namespace CentristTraveler.Repositories.Implementations
                     @BannerText = post.BannerText,
                     @AuthorId = post.AuthorId,
                     @CategoryId = post.CategoryId,
+                    @Slug = post.Slug,
                     @CreatedDate = post.CreatedDate,
                     @CreatedBy = post.CreatedBy,
                     @UpdatedDate = post.UpdatedDate,
@@ -195,6 +204,7 @@ namespace CentristTraveler.Repositories.Implementations
                               ,[AuthorId] = @AuthorId
                               ,[PreviewText] = @PreviewText
                               ,[CategoryId] = @CategoryId
+                              ,[Slug] = @Slug
                               ,[UpdatedDate] = @UpdatedDate
                               ,[UpdatedBy] = @UpdatedBy
                          WHERE Id = @Id";
@@ -211,6 +221,7 @@ namespace CentristTraveler.Repositories.Implementations
                             @BannerPath = post.BannerPath,
                             @BannerText = post.BannerText,
                             @AuthorId = post.AuthorId,
+                            @Slug = post.Slug,
                             @PreviewText = post.PreviewText,
                             @CategoryId = post.CategoryId,
                             @UpdatedDate = post.UpdatedDate,

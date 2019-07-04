@@ -38,7 +38,7 @@ const routes: Routes = [
     data: { title: 'Add Post', roles: 'Writer' }
   },
   {
-    path: 'post/detail/:id',
+    path: 'post/detail/:id/:slug',
     component: PostDetailComponent,
     data: { title: 'Detail' }
   },

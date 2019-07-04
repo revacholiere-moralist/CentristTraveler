@@ -19,7 +19,7 @@
           <h4>{{post.title}}</h4>
           <div class="user_details">
             <div class="float-left">
-              <a href="#" *ngFor="let tag of post.tags">{{tag.name}}</a>
+              <a *ngFor="let tag of post.tags" href="/post/posts/tag/{{tag.name}}" >{{tag.name}}</a>
             </div>
             <div class="float-right mt-sm-0 mt-3">
               <div class="media">

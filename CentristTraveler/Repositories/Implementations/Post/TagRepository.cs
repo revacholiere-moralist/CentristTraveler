@@ -71,13 +71,13 @@ namespace CentristTraveler.Repositories.Implementations
         {
             string sql = @"SELECT TOP 5 Tag.[Id] AS TagId
                           ,Tag.[Name]
-                          ,COUNT(Tag.[Id])
+                          ,Post.[Views]
                             FROM Master_Tag AS Tag
                             JOIN Mapping_Post_Tag As PostTag On Tag.Id = PostTag.TagId
-                            GROUP BY Tag.[Id], Tag.[Name]
-                            ORDER BY Count(Tag.[Id])";
+                            JOIN Post As Post On PostTag.PostId = Post.Id
+                            GROUP BY Tag.[Id], Tag.[Name], Post.Views
+                            ORDER BY Post.[Views] DESC";
             List<Tag> tags = new List<Tag>();
-
 
             try
             {

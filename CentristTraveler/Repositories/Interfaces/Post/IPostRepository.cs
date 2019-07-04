@@ -15,6 +15,6 @@ namespace CentristTraveler.Repositories.Interfaces
         int Create(Post post);
         bool Update(Post post);
         bool Delete(int id);
-        
+        List<Post> GetPopularPosts();
     }
 }

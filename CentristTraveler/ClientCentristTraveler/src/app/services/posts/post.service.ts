@@ -29,8 +29,8 @@ export class PostService {
     };
   }
 
-  getLatestPosts(): Observable<Post[]> {
-    return this.http.get<Post[]>(`${postUrl}/GetLatestPosts`);
+  getPopularPosts(): Observable<Post[]> {
+    return this.http.get<Post[]>(`${postUrl}/GetPopularPosts`);
   }
   getPosts(postSearchParam): Observable<Post[]> {
     return this.http.post<Post[]>(`${postUrl}/SearchPosts`, postSearchParam, httpOptions);

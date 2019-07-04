@@ -18,6 +18,6 @@ namespace CentristTraveler.BusinessLogic.Interfaces
         bool Delete(int id);
         List<CategoryDto> GetAllCategories();
         List<TagDto> GetPopularTags();
-        
+        List<PostDto> GetPopularPosts();
     }
 }

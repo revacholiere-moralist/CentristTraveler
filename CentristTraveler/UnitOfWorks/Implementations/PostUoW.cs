@@ -85,10 +85,6 @@ namespace CentristTraveler.UnitOfWorks.Implementations
             _connection.Open();
             _transaction = _connection.BeginTransaction();
 
-
-            
-            
-            
         }
 
     }

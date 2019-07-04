@@ -101,7 +101,12 @@ namespace CentristTraveler.Repositories.Implementations
 
         public Post GetPostById(int id)
         {
-            string sql = @"SELECT [Id] As PostId
+            string sql = @"
+                           UPDATE Post
+                            SET [Views] = [Views] + 1
+                            WHERE Id = @Id
+
+                           SELECT [Id] As PostId
                           ,[Title]
                           ,[Body]
                           ,[ThumbnailPath]
@@ -256,6 +261,38 @@ namespace CentristTraveler.Repositories.Implementations
             }
 
             return isSuccess;
+        }
+
+        public List<Post> GetPopularPosts()
+        {
+            var sql = @"SELECT TOP 5 [Id] AS PostId
+                          ,[Title]
+                          ,[Body]
+                          ,[ThumbnailPath]
+                          ,[PreviewText]
+                          ,[BannerPath]
+                          ,[BannerText]
+                          ,[AuthorId]
+                          ,[CategoryId]
+                          ,[Views]
+                          ,[Slug]
+                          ,[CreatedDate]
+                          ,[CreatedBy]
+                          ,[UpdatedDate]
+                          ,[UpdatedBy] FROM Post
+                            ORDER BY [Views] DESC";
+
+            List<Post> posts = new List<Post>();
+
+            try
+            {
+                posts = _connection.Query<Post>(sql, null, _transaction).ToList();
+            }
+            catch
+            {
+                posts = new List<Post>();
+            }
+            return posts;
         }
     }
 }

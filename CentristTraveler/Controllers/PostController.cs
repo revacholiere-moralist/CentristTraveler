@@ -41,6 +41,13 @@ namespace CentristTraveler.Controllers
             return postDtos;
         }
 
+        [HttpGet]
+        [Route("GetPopularPosts")]
+        public IEnumerable<PostDto> GetPopularPosts()
+        {
+            List<PostDto> postDtos = _postBL.GetPopularPosts();
+            return postDtos;
+        }
         [HttpPost]
         [Route("AddPost")]
         [Authorize(Roles = "Writer")]

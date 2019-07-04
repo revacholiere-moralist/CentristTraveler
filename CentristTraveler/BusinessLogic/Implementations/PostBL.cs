@@ -373,5 +373,40 @@ namespace CentristTraveler.BusinessLogic.Implementations
             input = Regex.Replace(input, @"\s", "-"); // hyphens  
             return input;
         }
+
+        public List<PostDto> GetPopularPosts()
+        {
+            _postUoW.Begin();
+            try
+            {
+                List<Post> posts = _postUoW.PostRepository.GetPopularPosts();
+                var postDtos = new List<PostDto>();
+                foreach (var post in posts)
+                {
+                    PostDto postDto = new PostDto
+                    {
+                        Id = post.PostId,
+                        Title = post.Title,
+                        Body = post.Body,
+                        ThumbnailPath = post.ThumbnailPath,
+                        BannerPath = post.BannerPath,
+                        PreviewText = post.PreviewText,
+                        CategoryId = post.CategoryId,
+                        Views = post.Views,
+                        Slug = post.Slug,
+                        CreatedBy = post.CreatedBy,
+                        CreatedDate = post.CreatedDate,
+                        UpdatedBy = post.UpdatedBy,
+                        UpdatedDate = post.UpdatedDate
+                    };
+                    postDtos.Add(postDto);
+                }
+                return postDtos;
+            }
+            catch
+            {
+                return new List<PostDto>();
+            }
+        }
     }
 }

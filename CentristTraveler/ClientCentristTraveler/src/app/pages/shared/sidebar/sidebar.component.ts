@@ -34,7 +34,7 @@ export class SidebarComponent implements OnInit {
       }, err => {
       });
 
-    this.postService.getLatestPosts()
+    this.postService.getPopularPosts()
       .subscribe(res => {
         this.posts = res;
       }, err => {

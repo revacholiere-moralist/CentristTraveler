@@ -8,12 +8,11 @@ namespace CentristTraveler.Repositories.Interfaces
 {
     public interface IRoleRepository : IBaseRepository
     {
-        List<Role> GetAllRoles();
-        Role GetRoleById(int id);
-
-        int Create(Role role);
-        bool Update(Role role);
-        bool Delete(int id);
+        Task<IEnumerable<Role>> GetAllRoles();
+        Task<Role> GetRoleById(int id);
+        Task<int> Create(Role role);
+        Task<bool> Update(Role role);
+        Task<bool> Delete(int id);
 
     }
 }

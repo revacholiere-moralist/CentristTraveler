@@ -24,19 +24,19 @@ namespace CentristTraveler.BusinessLogic.Implementations
             _authenticationUoW = authenticationUoW;
             _tokenConfig = tokenConfig;
         }
-        public string Authenticate(string login, string password)
+        public async Task<string> Authenticate(string login, string password)
         {
             _authenticationUoW.Begin();
             bool isAuthenticated = false;
             try
             {
-                string hashedPassword = _authenticationUoW.UserRepository.GetHashedPassword(login);
+                string hashedPassword = await _authenticationUoW.UserRepository.GetHashedPassword(login);
                 isAuthenticated = BCryptHelper.CheckPassword(password, hashedPassword);
                 
                 if (isAuthenticated)
                 {
-                    User user = _authenticationUoW.UserRepository.GetUserByLogin(login);
-                    List<string> roles = _authenticationUoW.UserRoleRepository.GetUserRoles(user.UserId);
+                    User user = await _authenticationUoW.UserRepository.GetUserByLogin(login);
+                    IEnumerable<string> roles = await _authenticationUoW.UserRoleRepository.GetUserRoles(user.UserId);
                     JwtHelper jwtHelper = new JwtHelper(_tokenConfig.Value.TokenSecurityKey,
                                                             _tokenConfig.Value.Issuer,
                                                             _tokenConfig.Value.Audience,
@@ -55,7 +55,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
             }
         }
 
-        public bool Register(UserDto userDto)
+        public async Task<bool> Register(UserDto userDto)
         {
             _authenticationUoW.Begin();
             try
@@ -73,7 +73,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                 };
                 
                 // hardcoded for now, give writer role to user
-                int newUserId = _authenticationUoW.UserRepository.Create(user);
+                int newUserId = await _authenticationUoW.UserRepository.Create(user);
                 List<Role> roles = new List<Role>();
                 foreach (RoleDto roleDto in userDto.Roles)
                 {
@@ -86,7 +86,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                 }
                 
 
-                var isSuccess = _authenticationUoW.UserRoleRepository.InsertUserRoles(newUserId, roles, user);
+                var isSuccess = await _authenticationUoW.UserRoleRepository.InsertUserRoles(newUserId, roles, user);
                 if (isSuccess)
                 {
                     _authenticationUoW.Commit();

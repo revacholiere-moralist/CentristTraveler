@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { Role } from './models/role';
 
 @Component({
   selector: 'app-root',
@@ -8,8 +6,7 @@ import { Role } from './models/role';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  roles: Role[] = [];
-  public constructor(private titleService: Title) { }
+  public constructor() { }
   onActivate(event) {
     window.scroll(0, 0);
     //or document.body.scrollTop = 0;

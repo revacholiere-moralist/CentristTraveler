@@ -8,16 +8,16 @@ namespace CentristTraveler.Repositories.Interfaces
 {
     public interface IUserRepository : IBaseRepository
     {
-        List<User> GetAllUsers();
-        User GetUserById(int id);
-        User GetUserByUsername(string username);
+        Task<IEnumerable<User>> GetAllUsers();
+        Task<User> GetUserById(int id);
+        Task<User> GetUserByUsername(string username);
 
-        User GetUserByEmail(string email);
-        string GetHashedPassword(string login);
-        User GetUserByLogin(string login);
-        int Create(User user);
-        bool Update(User user);
-        bool Delete(int id);
+        Task<User> GetUserByEmail(string email);
+        Task<string> GetHashedPassword(string login);
+        Task<User> GetUserByLogin(string login);
+        Task<int> Create(User user);
+        Task<bool> Update(User user);
+        Task<bool> Delete(int id);
 
     }
 }

@@ -21,28 +21,29 @@ namespace CentristTraveler.Controllers
         }
         [HttpPost]
         [Route("Register")]
-        public IActionResult Register([FromBody] UserDto userDto)
+        public async Task<IActionResult> Register([FromBody] UserDto userDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            bool isSuccess = _authenticationBL.Register(userDto);
-
+            bool isSuccess = await _authenticationBL.Register(userDto);
+            
             return Ok();
+            
         }
 
         [HttpPost]
         [Route("Authenticate")]
-        public IActionResult Authenticate([FromBody] UserDto userDto)
+        public async Task<IActionResult> Authenticate([FromBody] UserDto userDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            string token = _authenticationBL.Authenticate(userDto.Username, userDto.Password);
+            string token = await _authenticationBL.Authenticate(userDto.Username, userDto.Password);
 
             return Ok(token);
         }

@@ -11,8 +11,7 @@ namespace CentristTraveler.Repositories.Implementations
 {
     public class PostTagsRepository : BaseRepository, IPostTagsRepository
     {
-        
-        public bool InsertPostTags(int postId, List<Tag> tags, Post post)
+        public async Task<bool> InsertPostTags(int postId, List<Tag> tags, Post post)
         {
             string sql = @"INSERT INTO [dbo].[Mapping_Post_Tag]
                            ([PostId]
@@ -37,7 +36,7 @@ namespace CentristTraveler.Repositories.Implementations
             {
                 try
                 {
-                    int affectedRows = _connection.Execute(sql,
+                    int affectedRows = await _connection.ExecuteAsync(sql,
                         new
                         {
                             @PostId = postId,
@@ -63,7 +62,7 @@ namespace CentristTraveler.Repositories.Implementations
             return isSuccess;
         }
 
-        public bool DeletePostTags(int postId, List<Tag> tags)
+        public async Task<bool> DeletePostTags(int postId, List<Tag> tags)
         {
             string sql = @"DELETE FROM [dbo].[Mapping_Post_Tag]
                             WHERE PostId = @PostId
@@ -78,7 +77,7 @@ namespace CentristTraveler.Repositories.Implementations
             {
                 try
                 {
-                    int affectedRows = _connection.Execute(sql,
+                    int affectedRows = await _connection.ExecuteAsync(sql,
                         new
                         {
                             @PostId = postId,
@@ -101,13 +100,13 @@ namespace CentristTraveler.Repositories.Implementations
             return isSuccess;
         }
 
-        public bool DeletePostTagsByPostId(int postId)
+        public async Task<bool> DeletePostTagsByPostId(int postId)
         {
             string sql = @"DELETE FROM [dbo].[Mapping_Post_Tag]
                             WHERE PostId = @PostId";
             bool isSuccess = false;
             
-            int affectedRows = _connection.Execute(sql,
+            int affectedRows = await _connection.ExecuteAsync(sql,
                 new
                 {
                     @PostId = postId

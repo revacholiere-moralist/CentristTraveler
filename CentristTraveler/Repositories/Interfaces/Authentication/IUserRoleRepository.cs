@@ -8,10 +8,10 @@ namespace CentristTraveler.Repositories.Interfaces
 {
     public interface IUserRoleRepository : IBaseRepository
     {
-        List<string> GetUserRoles(int userId);
-        bool InsertUserRoles(int userId, List<Role> roles, User user);
-        bool DeleteUserRoles(int userId, List<Role> roles);
-        bool DeleteUserRoleByUserId(int userId);
+        Task<IEnumerable<string>> GetUserRoles(int userId);
+        Task<bool> InsertUserRoles(int userId, List<Role> roles, User user);
+        Task<bool> DeleteUserRoles(int userId, List<Role> roles);
+        Task<bool> DeleteUserRoleByUserId(int userId);
 
     }
 }

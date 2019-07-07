@@ -37,7 +37,6 @@ export class AllPostsComponent implements OnInit {
     this.postService.getPosts(this.postSearchParam)
       .subscribe(res => {
         this.data = res;
-        console.log(this.data);
         this.isLoadingResults = false;
       }, err => {
         this.isLoadingResults = false;

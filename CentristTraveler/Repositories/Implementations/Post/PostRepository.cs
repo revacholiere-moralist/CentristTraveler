@@ -17,7 +17,7 @@ namespace CentristTraveler.Repositories.Implementations
     public class PostRepository : BaseRepository, IPostRepository
     {
         
-        public List<Post> GetLatestPosts()
+        public async Task<IEnumerable<Post>> GetLatestPosts()
         {
             var sql = @"SELECT TOP 5 [Id] AS PostId
                           ,[Title]
@@ -36,20 +36,17 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[UpdatedBy] FROM Post
                             ORDER BY UpdatedDate DESC";
             
-            List<Post> posts = new List<Post>();
-
             try
             {
-                posts = _connection.Query<Post>(sql, null, _transaction).ToList();
+                return await _connection.QueryAsync<Post>(sql, null, _transaction);
             }
             catch
             {
-                posts = new List<Post>();
+                return new List<Post>();
             }
-            return posts;
         }
 
-        public List<Post> SearchPosts(PostSearchParamDto searchParam)
+        public async Task<IEnumerable<Post>> SearchPosts(PostSearchParamDto searchParam)
         {
             string sql = @"SELECT DISTINCT Post.[Id] As PostId
                           ,Post.[Title]
@@ -75,12 +72,10 @@ namespace CentristTraveler.Repositories.Implementations
                                 (@Tag = '' OR Tag.Name LIKE @Tag)
                                
                             ORDER BY UpdatedDate DESC";
-            List<Post> posts = new List<Post>();
-
+            
             try
             {
-                var postDictionary = new Dictionary<int, Post>();
-                posts = _connection.Query<Post>(sql,
+                return await _connection.QueryAsync<Post>(sql,
                     new
                     {
                         @Title = "%" + searchParam.Title + "%",
@@ -90,16 +85,15 @@ namespace CentristTraveler.Repositories.Implementations
                         
                     },
                     _transaction
-                    ).ToList();
+                    );
             }
             catch (Exception ex)
             {
-                posts = new List<Post>();
+                return new List<Post>();
             }
-            return posts;
         }
 
-        public Post GetPostById(int id)
+        public async Task<Post> GetPostById(int id)
         {
             string sql = @"
                            UPDATE Post
@@ -122,11 +116,10 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[UpdatedDate]
                           ,[UpdatedBy]  FROM Post
                         WHERE Id = @Id";
-            Post post = new Post();
             
             try
             {
-                post = _connection.QueryFirstOrDefault<Post>(sql,
+                return await _connection.QueryFirstOrDefaultAsync<Post>(sql,
                     new
                     {
                         @Id = id
@@ -135,15 +128,14 @@ namespace CentristTraveler.Repositories.Implementations
             }
             catch
             {
-                post = new Post();
+                return new Post();
                 //TODO: Add error log
             }
             
-            return post;
         }
 
 
-        public int Create(Post post)
+        public async Task<int> Create(Post post)
         {
             string sql = @"INSERT INTO [dbo].[Post]
                        ([Title]
@@ -174,9 +166,8 @@ namespace CentristTraveler.Repositories.Implementations
                        ,@UpdatedDate
                        ,@UpdatedBy)
                 SELECT CAST(SCOPE_IDENTITY() as int)";
-            int postId = 0;
-          
-            postId = _connection.ExecuteScalar<int>(sql,
+            
+            return await _connection.ExecuteScalarAsync<int>(sql,
                 new
                 {
                     @Title = post.Title,
@@ -194,11 +185,9 @@ namespace CentristTraveler.Repositories.Implementations
                     @UpdatedBy = post.UpdatedBy
                 },
                 _transaction);
-            
-            return postId;
         }
 
-        public bool Update(Post post)
+        public async Task<bool> Update(Post post)
         {
             string sql = @"UPDATE [dbo].[Post]
                            SET [Title] = @Title
@@ -216,7 +205,7 @@ namespace CentristTraveler.Repositories.Implementations
 
             bool isSuccess = false;
              
-            int affectedRows = _connection.Execute(sql,
+            int affectedRows = await _connection.ExecuteAsync(sql,
                         new
                         {
                             @Id = post.PostId,
@@ -236,20 +225,19 @@ namespace CentristTraveler.Repositories.Implementations
             if (affectedRows > 0)
             {
                 isSuccess = true;
-                
             }
             
             return isSuccess;
         }
 
 
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             string sql = @"DELETE FROM [dbo].[Post]
                 WHERE Id = @Id";
             bool isSuccess = false;
             
-            int affectedRows = _connection.Execute(sql,
+            int affectedRows = await _connection.ExecuteAsync(sql,
                 new
                 {
                     @Id = id
@@ -263,7 +251,7 @@ namespace CentristTraveler.Repositories.Implementations
             return isSuccess;
         }
 
-        public List<Post> GetPopularPosts()
+        public async Task<IEnumerable<Post>> GetPopularPosts()
         {
             var sql = @"SELECT TOP 5 [Id] AS PostId
                           ,[Title]
@@ -282,17 +270,14 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[UpdatedBy] FROM Post
                             ORDER BY [Views] DESC";
 
-            List<Post> posts = new List<Post>();
-
             try
             {
-                posts = _connection.Query<Post>(sql, null, _transaction).ToList();
+                return await _connection.QueryAsync<Post>(sql, null, _transaction);
             }
             catch
             {
-                posts = new List<Post>();
+                return new List<Post>();
             }
-            return posts;
         }
     }
 }

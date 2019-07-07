@@ -18,17 +18,17 @@ namespace CentristTraveler.BusinessLogic.Implementations
         {
             _postUoW = postUoW;
         }
-        public List<PostDto> GetLatestPosts()
+        public async Task<IEnumerable<PostDto>> GetLatestPosts()
         {
             _postUoW.Begin();
             try
             {
-                List<Post> posts = _postUoW.PostRepository.GetLatestPosts();
-                List<PostDto> postDtos = new List<PostDto>();
+                IEnumerable<Post> posts = await _postUoW.PostRepository.GetLatestPosts();
+                var postDtos = new List<PostDto>();
                 foreach (Post post in posts)
                 {
-                    List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(post.PostId);
-                    User user = _postUoW.UserRepository.GetUserById(post.AuthorId);
+                    IEnumerable<Tag> tags = await _postUoW.TagRepository.GetTagsByPostId(post.PostId);
+                    User user = await _postUoW.UserRepository.GetUserById(post.AuthorId);
                     PostDto postDto = new PostDto
                     {
                         Id = post.PostId,
@@ -59,17 +59,17 @@ namespace CentristTraveler.BusinessLogic.Implementations
             }
             
         }
-        public List<PostDto> SearchPosts(PostSearchParamDto searchParam)
+        public async Task<IEnumerable<PostDto>> SearchPosts(PostSearchParamDto searchParam)
         {
             var postDtos = new List<PostDto>();
             _postUoW.Begin();
             try
             {
-                List<Post> posts = _postUoW.PostRepository.SearchPosts(searchParam);
+                IEnumerable<Post> posts = await _postUoW.PostRepository.SearchPosts(searchParam);
                 foreach (Post post in posts)
                 {
-                    List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(post.PostId);
-                    User user = _postUoW.UserRepository.GetUserById(post.AuthorId);
+                    IEnumerable<Tag> tags = await _postUoW.TagRepository.GetTagsByPostId(post.PostId);
+                    User user = await _postUoW.UserRepository.GetUserById(post.AuthorId);
                     PostDto postDto = new PostDto
                     {
                         Id = post.PostId,
@@ -97,14 +97,14 @@ namespace CentristTraveler.BusinessLogic.Implementations
             }
             return postDtos;
         }
-        public PostDto GetPostById(int id)
+        public async Task<PostDto> GetPostById(int id)
         {
             _postUoW.Begin();
             try
             {
-                Post post = _postUoW.PostRepository.GetPostById(id);
-                List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(post.PostId);
-                User user = _postUoW.UserRepository.GetUserById(post.AuthorId);
+                Post post = await _postUoW.PostRepository.GetPostById(id);
+                IEnumerable<Tag> tags = await _postUoW.TagRepository.GetTagsByPostId(post.PostId);
+                User user = await _postUoW.UserRepository.GetUserById(post.AuthorId);
                 PostDto postDto = new PostDto
                 {
                     Id = post.PostId,
@@ -136,14 +136,14 @@ namespace CentristTraveler.BusinessLogic.Implementations
 
         }
 
-        public bool Create(PostDto postDto)
+        public async Task<bool> Create(PostDto postDto)
         {
             bool isSuccess = false;
 
             _postUoW.Begin();
             try
             {
-                User user = _postUoW.UserRepository.GetUserByUsername(postDto.AuthorUsername);
+                User user = await _postUoW.UserRepository.GetUserByUsername(postDto.AuthorUsername);
                 Post post = new Post
                 {
                     Title = postDto.Title,
@@ -161,20 +161,20 @@ namespace CentristTraveler.BusinessLogic.Implementations
                     UpdatedDate = DateTime.Now
                 };
 
-                int postId = _postUoW.PostRepository.Create(post);
+                int postId = await _postUoW.PostRepository.Create(post);
                 if (postId > 0)
                 {
                     List<Tag> tags = new List<Tag>();
                     foreach (Tag tag in postDto.Tags)
                     {
-                        Tag existingTag = _postUoW.TagRepository.GetTagByName(tag.Name);
+                        Tag existingTag = await _postUoW.TagRepository.GetTagByName(tag.Name);
                         if (existingTag == null)
                         {
                             tag.CreatedDate = DateTime.Now;
                             tag.CreatedBy = "admin";
                             tag.UpdatedDate = DateTime.Now;
                             tag.UpdatedBy = "admin";
-                            int newTagId = _postUoW.TagRepository.Create(tag);
+                            int newTagId = await _postUoW.TagRepository.Create(tag);
                             Tag newTag = new Tag
                             {
                                 TagId = newTagId,
@@ -188,7 +188,7 @@ namespace CentristTraveler.BusinessLogic.Implementations
                         }
 
                     }
-                    isSuccess = _postUoW.PostTagsRepository.InsertPostTags(postId, tags, post);
+                    isSuccess = await _postUoW.PostTagsRepository.InsertPostTags(postId, tags, post);
                     if (isSuccess)
                     {
                         _postUoW.Commit();
@@ -207,14 +207,14 @@ namespace CentristTraveler.BusinessLogic.Implementations
             }
         }
 
-        public bool Update(PostDto postDto)
+        public async Task<bool> Update(PostDto postDto)
         {
             bool isSuccess = false;
 
             _postUoW.Begin();
             try
             {
-                Post oldPost = _postUoW.PostRepository.GetPostById(postDto.Id);
+                Post oldPost = await _postUoW.PostRepository.GetPostById(postDto.Id);
 
                 oldPost.Title = postDto.Title;
                 oldPost.Body = postDto.Body;
@@ -233,12 +233,12 @@ namespace CentristTraveler.BusinessLogic.Implementations
                 oldPost.UpdatedBy = postDto.AuthorUsername;
                 oldPost.UpdatedDate = DateTime.Now;
 
-                isSuccess = _postUoW.PostRepository.Update(oldPost);
+                isSuccess = await _postUoW.PostRepository.Update(oldPost);
                 List<Tag> newTags = new List<Tag>();
                 List<Tag> deletedTags = new List<Tag>();
                 if (isSuccess)
                 {
-                    List<Tag> tags = _postUoW.TagRepository.GetTagsByPostId(oldPost.PostId);
+                    IEnumerable<Tag> tags = await _postUoW.TagRepository.GetTagsByPostId(oldPost.PostId);
                     List<string> newTagsName = postDto.Tags.Select(x => x.Name).ToList();
                     List<string> oldTagsName = tags.Select(x => x.Name).ToList();
                     foreach (Tag tag in tags)
@@ -250,14 +250,14 @@ namespace CentristTraveler.BusinessLogic.Implementations
                     }
                     foreach (Tag newTag in postDto.Tags)
                     {
-                        Tag existingTag = _postUoW.TagRepository.GetTagByName(newTag.Name);
+                        Tag existingTag = await _postUoW.TagRepository.GetTagByName(newTag.Name);
                         if (existingTag == null)
                         {
                             newTag.CreatedDate = DateTime.Now;
                             newTag.CreatedBy = "admin";
                             newTag.UpdatedDate = DateTime.Now;
                             newTag.UpdatedBy = "admin";
-                            int newTagId = _postUoW.TagRepository.Create(newTag);
+                            int newTagId = await _postUoW.TagRepository.Create(newTag);
                             Tag tag = new Tag
                             {
                                 TagId = newTagId,
@@ -272,10 +272,10 @@ namespace CentristTraveler.BusinessLogic.Implementations
                         }
                     }
 
-                    isSuccess = _postUoW.PostTagsRepository.InsertPostTags(oldPost.PostId, newTags, oldPost);
+                    isSuccess = await _postUoW.PostTagsRepository.InsertPostTags(oldPost.PostId, newTags, oldPost);
                     if (isSuccess)
                     {
-                        isSuccess = _postUoW.PostTagsRepository.DeletePostTags(oldPost.PostId, deletedTags);
+                        isSuccess = await _postUoW.PostTagsRepository.DeletePostTags(oldPost.PostId, deletedTags);
                     }
                     if (isSuccess)
                     {
@@ -295,16 +295,16 @@ namespace CentristTraveler.BusinessLogic.Implementations
             }
 
         }
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             bool isSuccess = false;
             _postUoW.Begin();
             try
             {
-                isSuccess = _postUoW.PostTagsRepository.DeletePostTagsByPostId(id); 
+                isSuccess = await _postUoW.PostTagsRepository.DeletePostTagsByPostId(id); 
                 if (isSuccess)
                 {
-                    isSuccess = _postUoW.PostRepository.Delete(id);
+                    isSuccess = await _postUoW.PostRepository.Delete(id);
                     _postUoW.Commit();
                 }
             }
@@ -316,13 +316,13 @@ namespace CentristTraveler.BusinessLogic.Implementations
             return isSuccess;
         }
 
-        public List<CategoryDto> GetAllCategories()
+        public async Task<IEnumerable<CategoryDto>> GetAllCategories()
         {
             _postUoW.Begin();
             try
             {
                 var categoryDtos = new List<CategoryDto>();
-                var categories = _postUoW.CategoryRepository.GetAll();
+                var categories = await _postUoW.CategoryRepository.GetAll();
                 foreach(Category category in categories)
                 {
                     var categoryDto = new CategoryDto
@@ -339,13 +339,13 @@ namespace CentristTraveler.BusinessLogic.Implementations
                 return new List<CategoryDto>();
             }
         }
-        public List<TagDto> GetPopularTags()
+        public async Task<IEnumerable<TagDto>> GetPopularTags()
         {
             _postUoW.Begin();
             try
             {
                 var tagDtos = new List<TagDto>();
-                var tags = _postUoW.TagRepository.GetPopularTags();
+                var tags = await _postUoW.TagRepository.GetPopularTags();
                 foreach (Tag tag in tags)
                 {
                     var tagDto = new TagDto 
@@ -363,23 +363,12 @@ namespace CentristTraveler.BusinessLogic.Implementations
             }
         }
 
-        private string SlugifyString(string input)
-        {
-            input = Regex.Replace(input, @"[^a-z0-9\s-]", "");
-            // convert multiple spaces into one space   
-            input = Regex.Replace(input, @"\s+", " ").Trim();
-            // cut and trim 
-            input = input.Substring(0, input.Length <= 45 ? input.Length : 45).Trim();
-            input = Regex.Replace(input, @"\s", "-"); // hyphens  
-            return input;
-        }
-
-        public List<PostDto> GetPopularPosts()
+        public async Task<IEnumerable<PostDto>> GetPopularPosts()
         {
             _postUoW.Begin();
             try
             {
-                List<Post> posts = _postUoW.PostRepository.GetPopularPosts();
+                IEnumerable<Post> posts = await _postUoW.PostRepository.GetPopularPosts();
                 var postDtos = new List<PostDto>();
                 foreach (var post in posts)
                 {
@@ -408,5 +397,17 @@ namespace CentristTraveler.BusinessLogic.Implementations
                 return new List<PostDto>();
             }
         }
+
+        private string SlugifyString(string input)
+        {
+            input = Regex.Replace(input, @"[^a-z0-9\s-]", "");
+            // convert multiple spaces into one space   
+            input = Regex.Replace(input, @"\s+", " ").Trim();
+            // cut and trim 
+            input = input.Substring(0, input.Length <= 45 ? input.Length : 45).Trim();
+            input = Regex.Replace(input, @"\s", "-"); // hyphens  
+            return input;
+        }
+
     }
 }

@@ -14,4 +14,5 @@ export class Post {
   slug: string;
   author_display_name: string;
   author_username: string;
+  created_date: string;
 }

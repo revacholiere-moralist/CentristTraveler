@@ -11,7 +11,7 @@ namespace CentristTraveler.Repositories.Implementations
 {
     public class RoleRepository : BaseRepository, IRoleRepository
     {
-        public List<Role> GetAllRoles()
+        public async Task<IEnumerable<Role>> GetAllRoles()
         {
             string sql = @"SELECT [Id]
                           ,[Name]
@@ -20,10 +20,10 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[UpdatedBy]
                           ,[UpdatedDate]
                       FROM [dbo].[Role]";
-            return _connection.Query<Role>(sql, null, _transaction).ToList();
+            return await _connection.QueryAsync<Role>(sql, null, _transaction);
         }
 
-        public Role GetRoleById(int id)
+        public async Task<Role> GetRoleById(int id)
         {
             string sql = @"SELECT [Id]
                           ,[Name]
@@ -33,15 +33,15 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[UpdatedDate]
                       FROM [dbo].[Role]
                       WHERE Id = @Id";
-            return _connection.Query<Role>(sql,
+            return await _connection.QueryFirstOrDefaultAsync<Role>(sql,
                 new
                 {
                     @Id = id
                 },
-                _transaction).FirstOrDefault();
+                _transaction);
         }
 
-        public int Create(Role role)
+        public async Task<int> Create(Role role)
         {
             string sql = @"INSERT INTO [dbo].[Role]
                            ([Name]
@@ -57,7 +57,7 @@ namespace CentristTraveler.Repositories.Implementations
                            ,@UpdatedDate
                         ,SELECT CAST(SCOPE_IDENTITY() as int";
 
-            return _connection.ExecuteScalar<int>(sql,
+            return await _connection.ExecuteScalarAsync<int>(sql,
                 new
                 {
                     @Name = role.Name,
@@ -69,7 +69,7 @@ namespace CentristTraveler.Repositories.Implementations
                _transaction);
         }
 
-        public bool Update(Role role)
+        public async Task<bool> Update(Role role)
         {
             string sql = @"UPDATE [dbo].[Role]
                            SET [Name] = @Name
@@ -80,7 +80,7 @@ namespace CentristTraveler.Repositories.Implementations
                          WHERE Id = @Id";
             bool isSuccess = false;
 
-            int affectedRows = _connection.Execute(sql,
+            int affectedRows = await _connection.ExecuteAsync(sql,
                 new
                 {
                     @Id = role.RoleId,
@@ -96,13 +96,13 @@ namespace CentristTraveler.Repositories.Implementations
 
             return isSuccess;
         }
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             string sql = @"DELETE FROM [dbo].[Role]
                 WHERE Id = @Id";
             bool isSuccess = false;
 
-            int affectedRows = _connection.Execute(sql,
+            int affectedRows = await _connection.ExecuteAsync(sql,
                 new
                 {
                     @Id = id

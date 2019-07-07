@@ -15,7 +15,7 @@ namespace CentristTraveler.Repositories.Implementations
 {
     public class CategoryRepository : BaseRepository, ICategoryRepository
     {
-        public List<Category> GetAll()
+        public async Task<IEnumerable<Category>> GetAll()
         {
             string sql = @"SELECT [Id] AS CategoryId
                           ,[Name]
@@ -25,17 +25,14 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[UpdatedDate]
                       FROM [dbo].[Master_Category]";
 
-            List<Category> categories = new List<Category>();
-
             try
             {
-                categories = _connection.Query<Category>(sql, null, _transaction).ToList();
+                return await _connection.QueryAsync<Category>(sql, null, _transaction);
             }
-            catch
+            catch (Exception ex)
             {
-                categories = new List<Category>();
+                return new List<Category>();
             }
-            return categories;
         }
     }
 }

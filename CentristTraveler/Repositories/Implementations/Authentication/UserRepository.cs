@@ -12,7 +12,7 @@ namespace CentristTraveler.Repositories.Implementations
     public class UserRepository : BaseRepository, IUserRepository
     {
 
-        public List<User> GetAllUsers()
+        public async Task<IEnumerable<User>> GetAllUsers()
         {
             string sql = @"SELECT [Id]
                           ,[Username]
@@ -21,22 +21,19 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[CreatedBy]
                           ,[UpdatedDate]
                           ,[UpdatedBy] FROM User";
-            List<User> users = new List<User>();
-
+            
             try
             {
-                users = _connection.Query<User>(sql, null, _transaction).ToList();
+                return await _connection.QueryAsync<User>(sql, null, _transaction);
             }
             catch (Exception ex)
             {
-                users = new List<User>();
+                return new List<User>();
                 // TODO: Add Error Log
             }
-
-            return users;
         }
 
-        public User GetUserById(int id)
+        public async Task<User> GetUserById(int id)
         {
             string sql = @"SELECT [Id] AS UserId
                           ,[Username]
@@ -48,27 +45,25 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[UpdatedBy] 
                             FROM [dbo].[User]
                             WHERE Id = @Id";
-            User user = new User();
-
+            
             try
             {
-                user = _connection.Query<User>(sql,
+                return await _connection.QueryFirstOrDefaultAsync<User>(sql,
                     new
                     {
                         @Id = id
                     }, 
-                    _transaction).FirstOrDefault();
+                    _transaction);
             }
             catch (Exception ex)
             {
-                user = new User();
+                return new User();
                 // TODO: Add Error Log
             }
 
-            return user;
         }
 
-        public User GetUserByUsername(string username)
+        public async Task<User> GetUserByUsername(string username)
         {
             string sql = @"SELECT [Id] AS UserId
                           ,[Username]
@@ -80,26 +75,24 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[UpdatedBy] 
                             FROM [dbo].[User]
                             WHERE Username = @username";
-            User user = new User();
             try
             {
-                user = _connection.Query<User>(sql,
+                return await _connection.QueryFirstOrDefaultAsync<User>(sql,
                     new
                     {
                         @Username = username
                     },
-                    _transaction).FirstOrDefault();
+                    _transaction);
             }
             catch (Exception ex)
             {
-                user = new User();
+                return new User();
                 // TODO: Add Error Log
             }
 
-            return user;
         }
 
-        public User GetUserByEmail(string email)
+        public async Task<User> GetUserByEmail(string email)
         {
             string sql = @"SELECT [Id]
                           ,[Username]
@@ -110,36 +103,32 @@ namespace CentristTraveler.Repositories.Implementations
                           ,[UpdatedBy] 
                             FROM User
                             WHERE Email = @Email";
-            User user = new User();
-
             try
             {
-                user = _connection.Query<User>(sql,
+                return await _connection.QueryFirstOrDefaultAsync<User>(sql,
                     new
                     {
                         @Email = email
                     },
-                    _transaction).FirstOrDefault();
+                    _transaction);
             }
             catch (Exception ex)
             {
-                user = new User();
+                return new User();
                 // TODO: Add Error Log
             }
 
-            return user;
         }
 
-        public string GetHashedPassword(string login)
+        public async Task<string> GetHashedPassword(string login)
         {
             string sql = @"SELECT [Password]
                             FROM [dbo].[User]
                             WHERE (Username = @login OR Email = @login)";
-            string hashedPassword = String.Empty;
-
+            
             try
             {
-                hashedPassword = _connection.ExecuteScalar<string>(sql,
+                return await _connection.ExecuteScalarAsync<string>(sql,
                     new
                     {
                         @login = login
@@ -148,38 +137,35 @@ namespace CentristTraveler.Repositories.Implementations
             }
             catch (Exception ex)
             {
-                hashedPassword = string.Empty;
+                return string.Empty;
                 // TODO: Add Error Log
             }
-            return hashedPassword;
         }
 
-        public User GetUserByLogin(string login)
+        public async Task<User> GetUserByLogin(string login)
         {
             string sql = @"SELECT [Id] AS UserId
                             ,[Username]
                             FROM [dbo].[User]
                             WHERE (Username = @login OR Email = @login)";
-            User user = new User();
-
+            
             try
             {
-                user = _connection.Query<User>(sql,
+                return await _connection.QueryFirstOrDefaultAsync<User>(sql,
                     new
                     {
                         @login = login
                     },
-                    _transaction).FirstOrDefault();
+                    _transaction);
             }
             catch (Exception ex)
             {
-                user = new User();
+                return new User();
                 // TODO: Add Error Log
             }
-            return user;
         }
 
-        public int Create(User user)
+        public async Task<int> Create(User user)
         {
             string sql = @"INSERT INTO [dbo].[User]
                            ([Username]
@@ -201,7 +187,7 @@ namespace CentristTraveler.Repositories.Implementations
                            ,@UpdatedDate)
                 SELECT CAST(SCOPE_IDENTITY() as int)";
 
-            return _connection.ExecuteScalar<int>(sql,
+            return await _connection.ExecuteScalarAsync<int>(sql,
                 new
                 {
                     @Username = user.Username,
@@ -216,7 +202,7 @@ namespace CentristTraveler.Repositories.Implementations
                _transaction);
         }
 
-        public bool Update(User user)
+        public async Task<bool> Update(User user)
         {
             string sql = @"UPDATE [dbo].[User]
                            SET [Password] = @Password
@@ -227,7 +213,7 @@ namespace CentristTraveler.Repositories.Implementations
                          WHERE Id = @Id";
             bool isSuccess = false;
 
-            int affectedRows = _connection.Execute(sql,
+            int affectedRows = await _connection.ExecuteAsync(sql,
                 new
                 {
                     @Password = user.Password,
@@ -244,13 +230,13 @@ namespace CentristTraveler.Repositories.Implementations
 
             return isSuccess;
         }
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             string sql = @"DELETE FROM [dbo].[User]
                 WHERE Id = @Id";
             bool isSuccess = false;
 
-            int affectedRows = _connection.Execute(sql,
+            int affectedRows = await _connection.ExecuteAsync(sql,
                 new
                 {
                     @Id = id

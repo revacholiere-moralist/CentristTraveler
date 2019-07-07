@@ -47,7 +47,6 @@ export class PostUpdateComponent implements OnInit {
       // optional
       // add callback when a image have been chosen
       checkBeforeSend: (file, next) => {
-        console.log(file);
         next(file); // go back to component and send to the server
       }
     }
@@ -94,7 +93,6 @@ export class PostUpdateComponent implements OnInit {
     this.getPostDetail(this.route.snapshot.params['id']);
     this.postService.getAllCategories()
       .subscribe(data => {
-        console.log(data);
         this.categories = data
       });
 

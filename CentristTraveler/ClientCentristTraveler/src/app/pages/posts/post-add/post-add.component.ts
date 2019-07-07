@@ -48,7 +48,6 @@ export class PostAddComponent implements OnInit {
       // optional
       // add callback when a image have been chosen
       checkBeforeSend: (file, next) => {
-        console.log(file);
         next(file); // go back to component and send to the server
       }
     }
@@ -89,7 +88,6 @@ export class PostAddComponent implements OnInit {
     this.titleService.setTitle('Add Post');
     this.postService.getAllCategories()
       .subscribe(data => {
-        console.log(data);
         this.categories = data
       });
     

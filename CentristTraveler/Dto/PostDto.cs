@@ -25,7 +25,7 @@ namespace CentristTraveler.Dto
         public int CategoryId { get; set; }
         
         [JsonProperty(PropertyName = "tags")]
-        public List<Tag> Tags { get; set; }
+        public IEnumerable<Tag> Tags { get; set; }
         [JsonProperty(PropertyName = "views")]
         public int Views { get; set; }
         [JsonProperty(PropertyName = "slug")]

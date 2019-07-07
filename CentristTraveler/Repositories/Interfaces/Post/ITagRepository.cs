@@ -8,13 +8,13 @@ namespace CentristTraveler.Repositories.Interfaces
 {
     public interface ITagRepository : IBaseRepository
     {
-        List<Tag> GetAllTags();
-        List<Tag> GetTagsByPostId(int postId);
-        List<Tag> GetPopularTags();
-        Tag GetTagById(int id);
-        Tag GetTagByName(string name);
-        int Create(Tag tag);
-        bool Update(Tag tag);
-        bool Delete(int id);
+        Task<IEnumerable<Tag>> GetAllTags();
+        Task<IEnumerable<Tag>> GetTagsByPostId(int postId);
+        Task<IEnumerable<Tag>> GetPopularTags();
+        Task<Tag>GetTagById(int id);
+        Task<Tag>GetTagByName(string name);
+        Task<int> Create(Tag tag);
+        Task<bool> Update(Tag tag);
+        Task<bool> Delete(int id);
     }
 }

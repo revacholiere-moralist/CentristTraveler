@@ -9,12 +9,12 @@ namespace CentristTraveler.Repositories.Interfaces
 {
     public interface IPostRepository : IBaseRepository
     {
-        List<Post> GetLatestPosts();
-        List<Post> SearchPosts(PostSearchParamDto searchParam);
-        Post GetPostById(int id);
-        int Create(Post post);
-        bool Update(Post post);
-        bool Delete(int id);
-        List<Post> GetPopularPosts();
+        Task<IEnumerable<Post>> GetLatestPosts();
+        Task<IEnumerable<Post>> SearchPosts(PostSearchParamDto searchParam);
+        Task<Post> GetPostById(int id);
+        Task<int> Create(Post post);
+        Task<bool> Update(Post post);
+        Task<bool> Delete(int id);
+        Task<IEnumerable<Post>> GetPopularPosts();
     }
 }

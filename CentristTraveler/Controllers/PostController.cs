@@ -27,99 +27,94 @@ namespace CentristTraveler.Controllers
 
         [HttpPost]
         [Route("SearchPosts")]
-        public IEnumerable<PostDto> SearchPosts([FromBody] PostSearchParamDto searchParam)
+        public async Task<IEnumerable<PostDto>> SearchPosts([FromBody] PostSearchParamDto searchParam)
         {
-            List<PostDto> postDtos = _postBL.SearchPosts(searchParam);
-            return postDtos;
+            return await _postBL.SearchPosts(searchParam);
         }
 
         [HttpGet]
         [Route("GetLatestPosts")]
-        public IEnumerable<PostDto> GetLatestPosts()
+        public async Task<IEnumerable<PostDto>> GetLatestPosts()
         {
-            List<PostDto> postDtos = _postBL.GetLatestPosts();
-            return postDtos;
+            return await _postBL.GetLatestPosts();
         }
 
         [HttpGet]
         [Route("GetPopularPosts")]
-        public IEnumerable<PostDto> GetPopularPosts()
+        public async Task<IEnumerable<PostDto>> GetPopularPosts()
         {
-            List<PostDto> postDtos = _postBL.GetPopularPosts();
-            return postDtos;
+            return await _postBL.GetPopularPosts();         
         }
         [HttpPost]
         [Route("AddPost")]
         [Authorize(Roles = "Writer")]
-        public IActionResult AddPost([FromBody] PostDto postDto)
+        public async Task<IActionResult> AddPost([FromBody] PostDto postDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             
-            return Ok(_postBL.Create(postDto));
+            return Ok(await _postBL.Create(postDto));
         }
         [HttpGet]
         [Route("Update/{id}")]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            PostDto postDto = _postBL.GetPostById(id);
+            return Ok(await _postBL.GetPostById(id));
             
-            return Ok(postDto);
         }
 
         [HttpPost]
         [Route("Update")]
-        public IActionResult Update([FromBody] PostDto postDto)
+        public async Task<IActionResult> Update([FromBody] PostDto postDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             
-            return Ok(_postBL.Update(postDto));
+            return Ok(await _postBL.Update(postDto));
         }
         [HttpGet]
         [Route("Detail/{id}")]
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            PostDto postDto = _postBL.GetPostById(id);
-            return Ok(postDto);
+            return Ok(await _postBL.GetPostById(id));
         }
 
         [HttpGet]
         [Route("Delete/{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return Ok(_postBL.Delete(id));
+            return Ok(await _postBL.Delete(id));
         }
 
         [HttpGet]
         [Route("GetAllCategories")]
-        public IActionResult GetAllCategories()
+        public async Task<IActionResult> GetAllCategories()
         {
-            return Ok(_postBL.GetAllCategories());
+            return Ok(await _postBL.GetAllCategories());
         }
 
         [HttpGet]
         [Route("GetPopularTags")]
-        public IActionResult GetPopularTags()
+        public async Task<IActionResult> GetPopularTags()
         {
-            return Ok(_postBL.GetPopularTags());
+            return Ok(await _postBL.GetPopularTags());
         }
     }
 }

@@ -8,8 +8,8 @@ namespace CentristTraveler.Repositories.Interfaces
 {
     public interface IPostTagsRepository : IBaseRepository
     {
-        bool InsertPostTags(int postId, List<Tag> tags, Post post);
-        bool DeletePostTags(int postId, List<Tag> tags);
-        bool DeletePostTagsByPostId(int postId);
+        Task<bool> InsertPostTags(int postId, List<Tag> tags, Post post);
+        Task<bool> DeletePostTags(int postId, List<Tag> tags);
+        Task<bool> DeletePostTagsByPostId(int postId);
     }
 }

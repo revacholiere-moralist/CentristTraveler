@@ -11,22 +11,21 @@ namespace CentristTraveler.Repositories.Implementations
 {
     public class UserRoleRepository : BaseRepository, IUserRoleRepository
     {
-        public List<string> GetUserRoles(int userId)
+        public async Task<IEnumerable<string>> GetUserRoles(int userId)
         {
             string sql = @"SELECT Role.Name
                             FROM [dbo].[Mapping_User_Role] AS UserRole
                             JOIN [dbo].[Role] AS Role ON UserRole.RoleId = Role.Id
                             WHERE UserRole.UserId = @UserId";
             
-            List<string> roles = _connection.Query<string>(sql,
+            return await _connection.QueryAsync<string>(sql,
                         new
                         {
                             @UserId = userId
                         },
-                        _transaction).ToList();
-            return roles;
+                        _transaction);
         }
-        public bool InsertUserRoles(int userId, List<Role> roles, User user)
+        public async Task<bool> InsertUserRoles(int userId, List<Role> roles, User user)
         {
             string sql = @"INSERT INTO [dbo].[Mapping_User_Role]
                            ([UserId]
@@ -48,7 +47,7 @@ namespace CentristTraveler.Repositories.Implementations
             {
                 try
                 {
-                    int affectedRows = _connection.Execute(sql,
+                    int affectedRows = await _connection.ExecuteAsync(sql,
                         new
                         {
                             @UserId = userId,
@@ -73,7 +72,7 @@ namespace CentristTraveler.Repositories.Implementations
 
             return isSuccess;
         }
-        public bool DeleteUserRoles(int userId, List<Role> roles)
+        public async Task<bool> DeleteUserRoles(int userId, List<Role> roles)
         {
             string sql = @"DELETE FROM [dbo].[Mapping_User_Role]
                             WHERE UserId = @UserId
@@ -84,7 +83,7 @@ namespace CentristTraveler.Repositories.Implementations
             {
                 try
                 {
-                    int affectedRows = _connection.Execute(sql,
+                    int affectedRows = await _connection.ExecuteAsync(sql,
                         new
                         {
                             @UserId = userId,
@@ -107,13 +106,13 @@ namespace CentristTraveler.Repositories.Implementations
             return isSuccess;
         }
 
-        public bool DeleteUserRoleByUserId(int userId)
+        public async Task<bool> DeleteUserRoleByUserId(int userId)
         {
             string sql = @"DELETE FROM [dbo].[Mapping_User_Role]
                             WHERE UserId = @UserId";
             bool isSuccess = false;
 
-            int affectedRows = _connection.Execute(sql,
+            int affectedRows = await _connection.ExecuteAsync(sql,
                 new
                 {
                     @UserId = userId
@@ -127,6 +126,5 @@ namespace CentristTraveler.Repositories.Implementations
             return isSuccess;
         }
 
-        
     }
 }

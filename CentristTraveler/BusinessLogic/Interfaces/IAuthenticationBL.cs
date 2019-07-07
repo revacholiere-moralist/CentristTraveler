@@ -9,7 +9,7 @@ namespace CentristTraveler.BusinessLogic.Interfaces
 {
     public interface IAuthenticationBL
     {
-        bool Register(UserDto userDto);
-        string Authenticate(string login, string password);
+        Task<bool> Register(UserDto userDto);
+        Task<string> Authenticate(string login, string password);
     }
 }

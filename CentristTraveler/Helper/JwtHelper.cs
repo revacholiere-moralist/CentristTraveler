@@ -18,13 +18,13 @@ namespace CentristTraveler.Helper
         private string _issuer;
         private string _audience;
         private string _username;
-        private List<string> _roles;
+        private IEnumerable<string> _roles;
         
         public JwtHelper(string securityKey,
                             string issuer,
                             string audience,
                             string username,
-                            List<string> roles)
+                            IEnumerable<string> roles)
         {
             _securityKey = securityKey;
             _issuer = issuer;

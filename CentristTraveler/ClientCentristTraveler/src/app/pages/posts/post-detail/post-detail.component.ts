@@ -15,7 +15,7 @@ export class PostDetailComponent implements OnInit {
   jwtHelperService = new JwtHelperService();
   isWriter: boolean = false;
   isAdmin: boolean = false;
-  post: Post = { id: this.route.snapshot.params['id'], title: '', body: '', thumbnail_path: null, tags: null, preview_text: null, banner_path: '', banner_text: '', category_id: null, views: 0, slug: '', author_display_name:'', author_username: '' };
+  post: Post = { id: this.route.snapshot.params['id'], title: '', body: '', thumbnail_path: null, tags: null, preview_text: null, banner_path: '', banner_text: '', category_id: null, views: 0, slug: '', author_display_name:'', author_username: '', created_date: '' };
   isLoadingResults = true;
   style: any = {};
   constructor(private postService: PostService,

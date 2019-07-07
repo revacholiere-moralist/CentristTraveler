@@ -8,6 +8,6 @@ namespace CentristTraveler.Repositories.Interfaces
 {
     public interface ICategoryRepository : IBaseRepository
     {
-        List<Category> GetAll();
+        Task<IEnumerable<Category>> GetAll();
     }
 }

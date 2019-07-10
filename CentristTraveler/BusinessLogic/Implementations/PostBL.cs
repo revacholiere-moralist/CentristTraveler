@@ -268,10 +268,10 @@ namespace CentristTraveler.BusinessLogic.Implementations
 
                         else if (!oldTagsName.Contains(newTag.Name))
                         {
-                            newTags.Add(newTag);
+                            newTags.Add(existingTag);
                         }
                     }
-
+                    
                     isSuccess = await _postUoW.PostTagsRepository.InsertPostTags(oldPost.PostId, newTags, oldPost);
                     if (isSuccess)
                     {
@@ -403,8 +403,6 @@ namespace CentristTraveler.BusinessLogic.Implementations
             input = Regex.Replace(input, @"[^a-z0-9\s-]", "");
             // convert multiple spaces into one space   
             input = Regex.Replace(input, @"\s+", " ").Trim();
-            // cut and trim 
-            input = input.Substring(0, input.Length <= 45 ? input.Length : 45).Trim();
             input = Regex.Replace(input, @"\s", "-"); // hyphens  
             return input;
         }
